@@ -7,7 +7,7 @@ create table jugador(
   primary key(id)
  );
 /*tabla cartas*/
-create table tabla(
+create table carta(
   id int not null,
   casta char(20) not null,
   puntos int not null,
@@ -71,4 +71,6 @@ INSERT INTO carta VALUES(49,'Trebol',10,'10',0);
 INSERT INTO carta VALUES(50,'Trebol',10,'J',0);
 INSERT INTO carta VALUES(51,'Trebol',10,'Q',0);
 INSERT INTO carta VALUES(52,'Trebol',10,'K',0);
+INSERT INTO carta VALUES(53,'Joker',50,'1',0);
+INSERT INTO carta VALUES(54,'Joker',50,'2',0);
 
