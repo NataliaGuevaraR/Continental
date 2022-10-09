@@ -29,7 +29,7 @@ export class Mesa extends Component {
         <tbody>
           {cartas.map(carta =>
               <tr key={carta.id}>
-                  {/* <img src={require(`${carta.imagen}`)} />*/}
+                  <img src={require(`${carta.imagen}`)} />
               </tr>
           )}
         </tbody>
