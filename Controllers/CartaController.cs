@@ -30,7 +30,7 @@ namespace Project2.Controllers
 
             var cartas = con.Query<Carta>("SELECT * FROM carta").ToList();
 
-            cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/"+ @{cartas.id} +".png"); //(`./Imagenes/${ cartas.logo}`)
+            cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/"+ cartas.Id +".png"); //(`./Imagenes/${ cartas.logo}`)
 
             con.Close();
 

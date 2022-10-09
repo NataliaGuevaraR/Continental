@@ -29,7 +29,7 @@ export class Mesa extends Component {
         <tbody>
           {cartas.map(carta =>
               <tr key={carta.id}>
-                  <img src={require(`${carta.imagen}`)} />
+                  {/* <img src={require(`${carta.imagen}`)} />*/}
               </tr>
           )}
         </tbody>
@@ -48,7 +48,6 @@ export class Mesa extends Component {
         <p> puntaje </p>
             <button className="btn btn-primary" onClick={this.reiniciar}>Reiniciar</button>
             <button className="btn btn-primary" onClick={this.repartir}>Repartir</button>
-            <img src={require('./Imagenes/1.png')} />
         {contents}
       </div>
     );
