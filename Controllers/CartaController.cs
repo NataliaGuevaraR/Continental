@@ -226,10 +226,67 @@ namespace Project2.Controllers
                     }
                     break;
                 case 5:// TTE
+                    if ()
+                    {
+                    
+                    }
+                    
                     break;
                 case 6:// TEE
+                    if()
+                    {
+                        if()
+                        {
+                        
+                        }
+                        else()
+                        {
+                        //no cumple
+                        }
+                   
                     break;
                 case 7:// EEE
+                    List casta_escalera = cartas.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).Casta;
+                    if(range(casta_escalera) > 3)
+                    {
+                     //no cumple
+                    }
+                    if(range(casta_escalera) == 3)
+                    {
+                        if(validar_escalera(casta_escalera[0]) && validar_escalera(casta_escalera[1]) && validar_escalera(casta_escalera[2]))
+                        {
+                            sumar_puntos(jugadorId, ronda, puntaje);
+                        }
+                    }
+                    if(range(casta_escalera) == 2)
+                    {
+                        if(validar_escalera(casta_escalera[1]))
+                        {
+                            if(validar_dos_escaleras(casta_escalera[0])
+                            {
+                            sumar_puntos(jugadorId, ronda, puntaje);
+                            }
+                            else
+                            {
+                            //no cumple
+                            }
+                        }
+                        else
+                        {
+                        //no cumple
+                        }
+                    }
+                    if(range(casta_escalera) == 1)
+                    {
+                        if(cartas_escalera.OrderBy(x => x.Id).ToList().Id[0] == (cartas_escalera.OrderBy(x => x.Id).ToList()[11].Id - 11))
+                        {
+                         sumar_puntos(jugadorId, ronda, puntaje);
+                        }
+                        else
+                        {
+                        //no cumple
+                        }
+                    }
                     break;
                 default:
                     // code block
