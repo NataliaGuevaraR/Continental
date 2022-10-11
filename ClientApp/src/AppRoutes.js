@@ -1,11 +1,11 @@
 import { Counter } from "./components/Counter";
 import { Mesa } from "./components/Mesa";
-import { Home } from "./components/Home";
+import { Reglas } from "./components/Reglas";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <Reglas />
   },
   {
     path: '/counter',
