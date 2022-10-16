@@ -199,7 +199,7 @@ export class Reglas extends Component {
               <div class="row">
 
 
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#finalModal">
+                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#finalModal">
                       Final
                   </button>
                   <div class="modal fade" id="finalModal" tabindex="-1" aria-labelledby="finalModalLabel" aria-hidden="true">

@@ -1,6 +1,7 @@
 import { Counter } from "./components/Counter";
 import { Mesa } from "./components/Mesa";
 import { Reglas } from "./components/Reglas";
+import { Name } from "./components/Name";
 
 const AppRoutes = [
   {
@@ -14,7 +15,11 @@ const AppRoutes = [
   {
     path: '/mesa',
     element: <Mesa />
-  }
+   },
+  {
+        path: '/name',
+        element: <Name />
+    }
 ];
 
 export default AppRoutes;
