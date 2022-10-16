@@ -2,7 +2,7 @@
 {
     public class Juego
     {
-        public string RondaActual { get; set; }
+        public int RondaActual { get; set; }
         public List<Ronda> Rondas { get; set; }
     }
 
