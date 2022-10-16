@@ -16,6 +16,15 @@ namespace Project2.Controllers
     {
         private readonly IConfiguration _config;
         private readonly ILogger<CartaController> _logger;
+        private readonly List<string> valores_cartas = new()
+        {
+            "A","2","3", "4","5", "6","7", "8","9", "10","J", "Q", "K"
+        };
+        private readonly List<string> cartas_precindibles = new()
+        {
+            "A","5","6","9","10"
+        };
+
 
         public CartaController(ILogger<CartaController> logger, IConfiguration config)
         {
@@ -23,7 +32,8 @@ namespace Project2.Controllers
             _config = config;
         }
 
-        public void sumar_puntos(int jugadorId, int ronda, int puntos)
+        // sumar puntos
+        public void Sumar_puntos(int jugadorId, int ronda, int puntos)
         {
             string aux_jugador = jugadorId == 1 ? "puntos_jugador_1" : "puntos_jugador_2";
 
@@ -40,12 +50,52 @@ namespace Project2.Controllers
             con.Close();
 
         }
-        //TODO
-        public Boolean validar_escalera (List<int> cartas_escalera)
-        {
 
+        // validar una escalera 
+        public bool ValidarEscalera (List<Carta> cartas_escalera)
+        { 
+            if (cartas_escalera.Count != 4)
+            {
+                return false;
+            }
+
+            if (cartas_escalera.Any(x => x.Letra == "A"))
+            {
+                if ((cartas_escalera.Any(x => x.Letra == "2") && cartas_escalera.Any(x => x.Letra == "3") && cartas_escalera.Any(x => x.Letra == "4")) || (cartas_escalera.Any(x => x.Letra == "J") && cartas_escalera.Any(x => x.Letra == "Q") && cartas_escalera.Any(x => x.Letra == "K")))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (cartas_escalera.OrderBy(x => x.Id).ToList()[0].Id == (cartas_escalera.OrderBy(x => x.Id).ToList()[3].Id - 3))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        // validar terna
+        public bool ValidarTerna (List<Carta> cartas_ternas, int nTernas)
+        {
+            if (cartas_ternas.GroupBy(x => x.Letra).Count() == nTernas)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
+        // validar dos escaleras
+        public bool ValidarDosEscaleras (List<Carta> cartasEscaleras)
+        {
+
+            return false;
+        }
+
+        // Obtener imagenes de cartas
         [HttpGet] 
         [Route("GetCartas")]
         public List<Carta> Get()
@@ -65,6 +115,7 @@ namespace Project2.Controllers
 
         }
 
+        // Reiniciar juego
         [HttpPost]
         [Route("Reiniciar")]
         public void Reiniciar()
@@ -83,6 +134,7 @@ namespace Project2.Controllers
 
         }
 
+        // Repartir cartas
         [HttpPost]
         [Route("Repartir")]
         public void Repartir()
@@ -98,9 +150,9 @@ namespace Project2.Controllers
 
         }
 
+        // Validar segun turno
         [HttpPost]
         [Route("Validar")]
-        
         public void Validar()
         {
             int jugadorId = 1;
@@ -116,22 +168,27 @@ namespace Project2.Controllers
             cartas.ForEach(x => x.Casta = x.Casta.TrimEnd());
 
             int puntaje = cartas.Sum(x => x.Puntos);
-
+            string casta_escalera = cartas.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).First().First().Casta;
+            var cartas_restantes = cartas.Where(x => x.Casta != casta_escalera).ToList();
+            var cartas_ordenadas_x_casta = cartas.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).Select(grp => grp.ToList()).ToList();
+            int numero_castas = cartas_ordenadas_x_casta.Count;
             switch (ronda)
             {
-                case 1://TT
-                    if (cartas.GroupBy(x => x.Letra).Count() == 2)
+                #region TT (6 CARTAS)
+                case 1:
+                    if (ValidarTerna(cartas, 2))
                     {
-                        sumar_puntos(jugadorId, ronda, puntaje);
+                        Sumar_puntos(jugadorId, ronda, puntaje);
                     }
                     else
-                    {
+                    { 
                         //no cumple
                     }
                     break;
-                case 2://TE
-                    string casta_escalera = cartas.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).First().First().Casta;
-                    var cartas_restantes = cartas.Where(x => x.Casta != casta_escalera).ToList();
+                #endregion
+                #region TE (7 CARTAS)
+                case 2: 
+                    
                     if (cartas_restantes.Count() < 2 || cartas_restantes.Count() > 3)
                     {
                         //no cumple
@@ -148,7 +205,7 @@ namespace Project2.Controllers
                                 {
                                     if ((cartas_escalera.Any(x => x.Letra == "2") && cartas_escalera.Any(x => x.Letra == "3") && cartas_escalera.Any(x => x.Letra == "4")) || (cartas_escalera.Any(x => x.Letra == "J") && cartas_escalera.Any(x => x.Letra == "Q") && cartas_escalera.Any(x => x.Letra == "K")))
                                     {
-                                        sumar_puntos(jugadorId, ronda, puntaje);
+                                        Sumar_puntos(jugadorId, ronda, puntaje);
                                     }
                                     else
                                     {
@@ -158,7 +215,7 @@ namespace Project2.Controllers
                                 else {
                                     if (cartas_escalera.OrderBy(x => x.Id).ToList()[0].Id == (cartas_escalera.OrderBy(x => x.Id).ToList()[3].Id - 3))
                                     {
-                                        sumar_puntos(jugadorId, ronda, puntaje);
+                                        Sumar_puntos(jugadorId, ronda, puntaje);
                                     }
                                     else
                                     {
@@ -187,7 +244,7 @@ namespace Project2.Controllers
                             {
                                 if ((cartas_escalera.Any(x => x.Letra == "2") && cartas_escalera.Any(x => x.Letra == "3") && cartas_escalera.Any(x => x.Letra == "4")) || (cartas_escalera.Any(x => x.Letra == "J") && cartas_escalera.Any(x => x.Letra == "Q") && cartas_escalera.Any(x => x.Letra == "K")))
                                 {
-                                    sumar_puntos(jugadorId, ronda, puntaje);
+                                    Sumar_puntos(jugadorId, ronda, puntaje);
                                 }
                                 else
                                 {
@@ -198,7 +255,7 @@ namespace Project2.Controllers
                             {
                                 if (cartas_escalera.OrderBy(x => x.Id).ToList()[0].Id == (cartas_escalera.OrderBy(x => x.Id).ToList()[3].Id - 3))
                                 {
-                                    sumar_puntos(jugadorId, ronda, puntaje);
+                                    Sumar_puntos(jugadorId, ronda, puntaje);
                                 }
                                 else
                                 {
@@ -212,87 +269,139 @@ namespace Project2.Controllers
                         }
                     }
                     break;
-                case 3://EE
-                    
-                    break;
-                case 4://TTT
-                    if (cartas.GroupBy(x => x.Letra).Count() == 3)
+                #endregion
+                #region EE (8 CARTAS)
+                case 3:
+                    if (numero_castas > 2)
                     {
-                        sumar_puntos(jugadorId, ronda, puntaje);
+                        //no cumple
+                    }
+                    if (numero_castas == 2)
+                    {
+                        if(ValidarEscalera(cartas_ordenadas_x_casta[0]) && ValidarEscalera(cartas_ordenadas_x_casta[1]))
+                        {
+                            Sumar_puntos(jugadorId, ronda, puntaje);
+                        }
+                        else
+                        {
+                            //no cumple
+                        }
+                    }
+                    if (numero_castas == 1)
+                    {
+                        if(cartas_ordenadas_x_casta[0].Any(x => x.Letra == "A"))
+                        {
+
+                        }
+                        else
+                        {
+                            if(cartas_ordenadas_x_casta[0].OrderBy(x => x.Id).ToList()[0].Id == cartas_ordenadas_x_casta[0].OrderBy(x => x.Id).ToList()[3].Id - 3 && cartas_ordenadas_x_casta[0].OrderBy(x => x.Id).ToList()[4].Id == cartas_ordenadas_x_casta[0].OrderBy(x => x.Id).ToList()[7].Id - 3)
+                            {
+                                Sumar_puntos(jugadorId, ronda, puntaje);
+                            }
+                            else
+                            {
+                                //no cumple
+                            }
+                        }
+                    }
+                    break;
+                #endregion
+                #region TTT (9 CARTAS)
+                case 4:
+                    if (ValidarTerna(cartas, 3))
+                    {
+                        Sumar_puntos(jugadorId, ronda, puntaje);
                     }
                     else
                     {
                         //no cumple
                     }
                     break;
-                case 5:// TTE
-                    if ()
-                    {
+                #endregion
+                #region TTE (10 CARTAS)
+                case 5:
                     
-                    }
                     
                     break;
-                case 6:// TEE
-                    if()
+                #endregion
+                #region TEE (11 CARTAS)
+                case 6:
+                    /*if()
                     {
                         if()
                         {
                         
                         }
-                        else()
+                        else
                         {
                         //no cumple
-                        }
+                        }*/
                    
                     break;
-                case 7:// EEE
-                    List casta_escalera = cartas.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).Casta;
-                    if(range(casta_escalera) > 3)
+                #endregion
+                #region EEE (12 CARTAS)
+                case 7:
+                    
+                    if (numero_castas > 3)
                     {
                      //no cumple
                     }
-                    if(range(casta_escalera) == 3)
+                    if(numero_castas == 3)
                     {
-                        if(validar_escalera(casta_escalera[0]) && validar_escalera(casta_escalera[1]) && validar_escalera(casta_escalera[2]))
+                        if (ValidarEscalera(cartas_ordenadas_x_casta[0]) && ValidarEscalera(cartas_ordenadas_x_casta[1]) && ValidarEscalera(cartas_ordenadas_x_casta[2]))
                         {
-                            sumar_puntos(jugadorId, ronda, puntaje);
+                            Sumar_puntos(jugadorId, ronda, puntaje);
+                        }
+                        else
+                        {
+                            //no cumple
                         }
                     }
-                    if(range(casta_escalera) == 2)
-                    {
-                        if(validar_escalera(casta_escalera[1]))
+                    if(numero_castas == 2)
+                    {   
+                        if (cartas_ordenadas_x_casta[0].Count() != 8)
                         {
-                            if(validar_dos_escaleras(casta_escalera[0])
+                            //no cumple
+                        }
+                        else
+                        {
+                            if (ValidarEscalera(cartas_ordenadas_x_casta[1]))
                             {
-                            sumar_puntos(jugadorId, ronda, puntaje);
+                                if (ValidarDosEscaleras(cartas_ordenadas_x_casta[0]))
+                                {
+                                    Sumar_puntos(jugadorId, ronda, puntaje);
+                                }
+                                else
+                                {
+                                    //no cumple
+                                }
                             }
                             else
                             {
-                            //no cumple
+                                //no cumple
                             }
                         }
-                        else
-                        {
-                        //no cumple
-                        }
                     }
-                    if(range(casta_escalera) == 1)
+                    if(numero_castas == 1)
                     {
-                        if(cartas_escalera.OrderBy(x => x.Id).ToList().Id[0] == (cartas_escalera.OrderBy(x => x.Id).ToList()[11].Id - 11))
+                        string carta_restante = valores_cartas.Except(cartas_ordenadas_x_casta[0].Select(x => x.Letra)).First();
+                        if (cartas_precindibles.Contains(carta_restante))
                         {
-                         sumar_puntos(jugadorId, ronda, puntaje);
+                            Sumar_puntos(jugadorId, ronda, puntaje);
                         }
                         else
                         {
-                        //no cumple
+                            //no cumple
                         }
                     }
                     break;
+                #endregion
+
                 default:
                     // code block
                     break;
             }
-
         }
     }
 }
