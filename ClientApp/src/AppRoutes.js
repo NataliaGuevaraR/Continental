@@ -1,11 +1,12 @@
 import { Counter } from "./components/Counter";
 import { Mesa } from "./components/Mesa";
-import { Home } from "./components/Home";
+import { Reglas } from "./components/Reglas";
+import { Name } from "./components/Name";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <Reglas />
   },
   {
     path: '/counter',
@@ -14,7 +15,11 @@ const AppRoutes = [
   {
     path: '/mesa',
     element: <Mesa />
-  }
+   },
+  {
+        path: '/name',
+        element: <Name />
+    }
 ];
 
 export default AppRoutes;
