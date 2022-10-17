@@ -75,6 +75,7 @@ namespace Project2.Controllers
             }
             return false;
         }
+        
         // validar terna
         public bool ValidarTerna (List<Carta> cartas_ternas, int nTernas)
         {
@@ -91,7 +92,6 @@ namespace Project2.Controllers
         // validar dos escaleras
         public bool ValidarDosEscaleras (List<Carta> cartasEscaleras)
         {
-
             return false;
         }
 
@@ -153,7 +153,7 @@ namespace Project2.Controllers
         // Validar segun turno
         [HttpPost]
         [Route("Validar")]
-        public void Validar()
+        public void Validar(/*int jugadorId*/)
         {
             int jugadorId = 1;
 
@@ -172,6 +172,7 @@ namespace Project2.Controllers
             var cartas_restantes = cartas.Where(x => x.Casta != casta_escalera).ToList();
             var cartas_ordenadas_x_casta = cartas.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).Select(grp => grp.ToList()).ToList();
             int numero_castas = cartas_ordenadas_x_casta.Count;
+
             switch (ronda)
             {
                 #region TT (6 CARTAS)
@@ -270,7 +271,7 @@ namespace Project2.Controllers
                     }
                     break;
                 #endregion
-                #region EE (8 CARTAS)
+                #region EE (8 CARTAS) TODO
                 case 3:
                     if (numero_castas > 2)
                     {
@@ -318,26 +319,69 @@ namespace Project2.Controllers
                         //no cumple
                     }
                     break;
-                #endregion
-                #region TTE (10 CARTAS)
+                #endregion 
+                #region TTE (10 CARTAS) TODO
                 case 5:
-                    
-                    
-                    break;
-                #endregion
-                #region TEE (11 CARTAS)
-                case 6:
-                    /*if()
+                    if (cartas_ordenadas_x_casta[0].Count < 4)
                     {
-                        if()
-                        {
+                        //no cumple
+                    }
+                    if (cartas_ordenadas_x_casta[0].Count == 6 || cartas_ordenadas_x_casta[0].Count == 5)
+                    {
                         
+                    }
+                    if (cartas_ordenadas_x_casta[0].Count == 4)
+                    {
+                        if(ValidarEscalera(cartas_ordenadas_x_casta[0]))
+                        {
+                            if(ValidarTerna(cartas_restantes, 2))
+                            {
+                                Sumar_puntos(jugadorId, ronda, puntaje);
+                            }
+                            else
+                            {
+                                //no cumple
+                            }
                         }
                         else
                         {
+                            //no cumple
+                        }
+                    }
+                    else
+                    {
                         //no cumple
-                        }*/
-                   
+                    }
+                    break;
+                #endregion
+                #region TEE (11 CARTAS) TO DO
+                case 6:
+                    if (cartas_ordenadas_x_casta[0].Count < 4)
+                    {
+                        if(cartas_ordenadas_x_casta[0].Count == 8 && ValidarDosEscaleras(cartas_ordenadas_x_casta[0]))
+                        {
+                            if (ValidarTerna(cartas_restantes, 1))
+                            {
+                                Sumar_puntos(jugadorId, ronda, puntaje);
+                            }
+                            else
+                            {
+                                //no cumple
+                            }
+                        }
+                        if(cartas_ordenadas_x_casta[0].Count == 4 && cartas_ordenadas_x_casta[1].Count == 4)
+                        {
+
+                        }
+                        else
+                        {
+                            //no cumple
+                        }
+                    }
+                    else
+                    {
+
+                    }
                     break;
                 #endregion
                 #region EEE (12 CARTAS)
