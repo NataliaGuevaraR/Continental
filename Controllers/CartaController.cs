@@ -42,7 +42,10 @@ namespace Project2.Controllers
             con.Query("update juego set ronda_actual = " + (ronda+1).ToString());
             con.Query("update jugador set puntos = " + puntos.ToString() + " WHERE id = " + jugadorId.ToString());
             con.Query("update ronda set " + aux_jugador + " = " + puntos.ToString() + " where numero_ronda = " + ronda.ToString());
+
             con.Close();
+            Repartir((ronda + 1).ToString());
+
             return "Usted ha sumado "+ puntos.ToString() + " puntos";
         }
 
@@ -88,7 +91,7 @@ namespace Project2.Controllers
             return false;
         }
 
-        // Obtener imagenes de cartas
+        // Obtener cartas
         [HttpGet] 
         [Route("GetCartas")]
         public List<Carta> Get()
@@ -124,20 +127,20 @@ namespace Project2.Controllers
             con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
 
             con.Close();
-
+            Repartir("6");
         }
 
         // Repartir cartas
         [HttpPost]
         [Route("Repartir")]
-        public void Repartir()
+        public void Repartir(string ronda)
         {
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);
             con.Open();
 
-            con.Query("exec Repartir 6");
+            con.Query("exec Repartir "+ ronda);
 
             con.Close();
         }
