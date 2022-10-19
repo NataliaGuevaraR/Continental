@@ -1,12 +1,12 @@
 import { Counter } from "./components/Counter";
 import { Mesa } from "./components/Mesa";
 import { Reglas } from "./components/Reglas";
-import { Name } from "./components/Name";
+import { Home } from "./components/Home";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Reglas />
+    element: <Home />
   },
   {
     path: '/counter',
@@ -17,8 +17,8 @@ const AppRoutes = [
     element: <Mesa />
    },
   {
-        path: '/name',
-        element: <Name />
+    path: '/reglas',
+    element: <Reglas />
     }
 ];
 

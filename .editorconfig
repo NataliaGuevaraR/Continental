@@ -69,7 +69,7 @@ csharp_style_prefer_top_level_statements = true:silent
 csharp_style_prefer_switch_expression = true:suggestion
 csharp_style_prefer_pattern_matching = true:silent
 csharp_space_around_binary_operators = before_and_after
-csharp_indent_labels = one_less_than_current
+csharp_indent_labels = no_change
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 csharp_style_prefer_not_pattern = true:suggestion
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
@@ -93,6 +93,10 @@ csharp_style_unused_value_expression_statement_preference = discard_variable:sil
 csharp_style_var_for_built_in_types = false:silent
 csharp_style_var_when_type_is_apparent = false:silent
 csharp_style_var_elsewhere = false:silent
+csharp_indent_block_contents = false
+csharp_indent_case_contents = false
+csharp_indent_case_contents_when_block = false
+csharp_indent_switch_labels = false
 
 [*.vb]
 #### Estilos de nomenclatura ####
@@ -177,3 +181,4 @@ dotnet_style_qualification_for_field = false:silent
 dotnet_style_qualification_for_property = false:silent
 dotnet_style_qualification_for_method = false:silent
 dotnet_style_qualification_for_event = false:silent
+indent_style = tab
