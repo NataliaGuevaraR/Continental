@@ -145,29 +145,7 @@ export class Reglas extends Component {
               </div>
               </div>
               <div class="row">
-                  <div class="col text-center">
-
-                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comodinModal">
-                          Comodín
-                      </button>
-                      <div class="modal fade" id="comodinModal" tabindex="-1" aria-labelledby="comodinModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                              <div class="modal-content">
-                                  <div class="modal-body text-center">
-                                      <div class="container-md">
-                                          <h2>El comodín</h2>
-                                          <p>El comodín, también llamado joker, es una carta especial que reemplaza a cualquier otra de la baraja.
-                                              En el continental puede hacerse un trío con dos comodines y una carta natural, pero no un trío de comodines.</p>
-                                      </div>
-                                  </div>
-                                  <div class="modal-footer">
-                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-   
-                  </div>
+                  
                   <div class="col text-center">
 
                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#desarrolloModal">
