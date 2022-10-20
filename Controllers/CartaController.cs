@@ -145,8 +145,30 @@ namespace Project2.Controllers
             con.Close();
         }
 
-        // Validar segun turno
-        [HttpPost]
+		// Guardar nombre
+		[HttpPost]
+		[Route("GuardarNombre")]
+		public void GuardarNombre(string nombre)
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+		
+		string nombre_1 = con.Query("select nombre from jugador where id = 1").ToString();
+
+		int id = 1;
+
+		if (nombre_1 != "                    ")
+			id = 2;
+			
+		con.Query("update jugador set nombre = "+ nombre +" where id = "+ id);
+
+		con.Close();
+		}
+
+		// Validar segun turno
+		[HttpPost]
         [Route("Validar")]
         public string Validar(/*int jugadorId*/)
         {
