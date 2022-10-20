@@ -63,6 +63,8 @@ export class Mesa extends Component {
         })
     }
 
+ 
+
     repartir() {
         //this.setState({ cartas: [], loading: true });
 
