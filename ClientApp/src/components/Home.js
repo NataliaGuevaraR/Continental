@@ -63,31 +63,29 @@ export class Home extends Component {
     }
 
     handleButton() {
-        this.GuardarNombre((this.state.jugador.nombre).toString()).then((data) => {
-            console.log(data);
-        });
+        this.GuardarNombre((this.state.jugador.nombre).toString());
         this.reiniciar();
     }
 
-    async GuardarNombre() {
-        const requestOptions = await fetch ('carta/GuardarNombre', {
+    GuardarNombre(value) {
+        fetch('carta/GuardarNombre', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'POST',
             mode: 'cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: ''
-        });
-        return requestOptions.json();
-    
+            body: JSON.stringify(value)
+        })
     }
 
 
-    //reiniciar() {
-      //  fetch('carta/Reiniciar', {
-        //    method: 'POST',
-          //  mode: 'cors',
-            //body: ''
-        //})
-    //}
+    reiniciar() {
+        fetch('carta/Reiniciar', {
+            method: 'POST',
+            mode: 'cors',
+            body: ''
+        })
+    }
 
 
 }
