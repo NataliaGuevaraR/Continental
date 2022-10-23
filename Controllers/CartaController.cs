@@ -148,23 +148,33 @@ namespace Project2.Controllers
 		// Guardar nombre
 		[HttpPost]
 		[Route("GuardarNombre")]
-		public void GuardarNombre(string nombre)
+		public String GuardarNombre()
 		{
+String name = 
+		Console.WriteLine(name);
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
-		
-		string nombre_1 = con.Query("select nombre from jugador where id = 1").ToString();
 
+		SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
+		SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
+		String nombre_1 = "";
+		while (dataReader.Read()) {
+			dataReader.GetValue(0);
+		}
+		dataReader.Close();
+		
 		int id = 1;
 
 		if (nombre_1 != "                    ")
 			id = 2;
 			
-		con.Query("update jugador set nombre = "+ nombre +" where id = "+ id);
+		con.Query("update jugador set nombre = "+ name +" where id = "+ id);
 
 		con.Close();
+
+		return "Success"!;
 		}
 
 		// Validar segun turno

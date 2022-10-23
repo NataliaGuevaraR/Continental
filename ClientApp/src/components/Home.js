@@ -1,9 +1,20 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+
+
 export class Home extends Component {
     static displayName = Home.name;
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            jugador: {
+                name: props.name
+            }
+        }
+    }
+    
+    
     render() {
         return (
 
@@ -26,10 +37,10 @@ export class Home extends Component {
                                         <h1>Nombre para el juego</h1>
                                     </div>
                                     <div class="row">
-                                        <input class="form-control" id="nombre" type="text" placeholder="Nickname" aria-label="nickname" />
+                                        <input class="form-control" id="nickname" type="text" placeholder="Nickname" aria-label="nickname" value={this.state.jugador.name} onChange={this.handleName.bind(this)} />
                                     </div>
                                     <div class="row">
-                                        <button className="btn btn-primary" onClick={this.GuardarNombre(nombre)}>Jugar</button>
+                                        <button className="btn btn-primary" onClick={this.handleButton.bind(this)}>Jugar</button>
                                     </div>
                                 </div>
                             </div>
@@ -42,11 +53,41 @@ export class Home extends Component {
             </div>
         );
     }
-    GuardarNombre() {
-        fetch('carta/GuardarNombre', {
-            method: 'POST',
-            mode: 'cors',
-            body: ''
+    handleName(event) {
+        var jugador = this.state.jugador;
+        var modifiedName = event.target.value;
+        jugador.nombre = modifiedName;
+        this.setState({
+            jugador : jugador
         })
     }
+
+    handleButton() {
+        this.GuardarNombre((this.state.jugador.nombre).toString()).then((data) => {
+            console.log(data);
+        });
+        this.reiniciar();
+    }
+
+    async GuardarNombre() {
+        const requestOptions = await fetch ('carta/GuardarNombre', {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: ''
+        });
+        return requestOptions.json();
+    
+    }
+
+
+    //reiniciar() {
+      //  fetch('carta/Reiniciar', {
+        //    method: 'POST',
+          //  mode: 'cors',
+            //body: ''
+        //})
+    //}
+
+
 }
