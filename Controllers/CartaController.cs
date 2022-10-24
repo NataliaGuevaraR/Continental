@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Project2.Clases;
 using System.Data.SqlClient;
+using System.Text.Json;
 
 namespace Project2.Controllers
 {
@@ -121,10 +122,11 @@ namespace Project2.Controllers
             using var con = new SqlConnection(cs);
             con.Open();
 
-            con.Query("update juego set ronda_actual = 0");
+			//con.Query("update jugador set nombre = ''");
+            //con.Query("update juego set ronda_actual = 0");
             con.Query("update carta set estado = 0");
             con.Query("update jugador set puntos = 0, estado = 0");
-            con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
+            //con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
 
             con.Close();
             Repartir("6");
@@ -140,7 +142,7 @@ namespace Project2.Controllers
             using var con = new SqlConnection(cs);
             con.Open();
 
-            con.Query("exec Repartir "+ ronda);
+            //con.Query("exec Repartir "+ ronda);
 
             con.Close();
         }
@@ -148,21 +150,29 @@ namespace Project2.Controllers
 		// Guardar nombre
 		[HttpPost]
 		[Route("GuardarNombre")]
-		public void GuardarNombre(string nombre)
+		public void GuardarNombre([FromBody] JsonElement content)
 		{
+		String name = content.ToString();
+
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
-		
-		string nombre_1 = con.Query("select nombre from jugador where id = 1").ToString();
 
+		SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
+		SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
+		String nombre_1 = "";
+		while (dataReader.Read()) {
+			nombre_1 = nombre_1 + dataReader.GetValue(0);
+		}
+		dataReader.Close();
+		
 		int id = 1;
 
 		if (nombre_1 != "                    ")
 			id = 2;
 			
-		con.Query("update jugador set nombre = "+ nombre +" where id = "+ id);
+		con.Query("update jugador set nombre = "+ "'" + name + "'" +" where id = "+ id);
 
 		con.Close();
 		}
@@ -307,4 +317,4 @@ namespace Project2.Controllers
             return "Imposible";
         }
     }
-}
+	}

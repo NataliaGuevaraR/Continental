@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, Routes, Route } from 'react-router-dom';
+import { ModalNombre } from './ModalNombre';
+import { Mesa } from './Mesa';
+import { Reglas } from './Reglas';
 
 export class Home extends Component {
     static displayName = Home.name;
-
+    constructor(props) {
+        super(props); 
+        this.state = {
+            isModalOpen: false,
+        }
+    }
+        modalToHome = (answer) => {
+        this.setState({
+            isModalOpen: answer
+        })
+        this.reiniciar();
+        this.props.navigate("/mesa");
+    }
+    
     render() {
         return (
-
             <div class="container-md text-center">
                 <div>
                     <p>Aquí va la imagen principal del juego</p>
@@ -15,38 +30,35 @@ export class Home extends Component {
                     <button class="btn btn-primary"><Link to="/reglas"><h1 class="text-white">Ver reglas</h1></Link></button>
                 </div>
                 <div>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nombreModal"><h1 class="text-white">Comenzar juego nuevo</h1></button>
+                    <button class="btn btn-primary" onClick={this.toggleUserModal}><h1 class="text-white">Comenzar juego nuevo</h1></button>
+                    {this.state.isModalOpen ?
+                        <ModalNombre modalToHome={this.modalToHome }
+                        />
+                        : null}
                 </div>
-                <div class="modal fade" id="nombreModal" tabindex="-1" aria-labelledby="nombreModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-body justify-content-center text-center">
-                                <div class="container-md text-center">
-                                    <div class="row">
-                                        <h1>Nombre para el juego</h1>
-                                    </div>
-                                    <div class="row">
-                                        <input class="form-control" id="nombre" type="text" placeholder="Nickname" aria-label="nickname" />
-                                    </div>
-                                    <div class="row">
-                                        <button className="btn btn-primary" onClick={this.GuardarNombre(nombre)}>Jugar</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Routes>
+                    <Route path="/mesa" element={<Mesa />} />
+                    <Route path="/reglas" element={<Reglas />} />
+                </Routes>
             </div>
         );
     }
-    GuardarNombre() {
-        fetch('carta/GuardarNombre', {
+
+    reiniciar() {
+        fetch('carta/Reiniciar', {
             method: 'POST',
             mode: 'cors',
             body: ''
         })
     }
+
+    toggleUserModal = () => {
+        this.setState((state) => {
+            return { isModalOpen: !state.isModalOpen }
+        })
+    }
+}
+export function Redireccionar(props) {
+    const navigate = useNavigate();
+    return (<Home navigate={navigate} />);  
 }
