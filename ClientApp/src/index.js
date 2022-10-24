@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { Redireccionar } from "./components/ModalNombre";
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
@@ -13,7 +12,7 @@ const root = createRoot(rootElement);
 
 root.render(
   <BrowserRouter basename={baseUrl}>
-        <Redireccionar />
+        <App />
   </BrowserRouter>);
 
 // If you want your app to work offline and load faster, you can change

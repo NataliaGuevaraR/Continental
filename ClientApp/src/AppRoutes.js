@@ -1,13 +1,13 @@
 import { Counter } from "./components/Counter";
 import { Mesa } from "./components/Mesa";
 import { Reglas } from "./components/Reglas";
-import { Home } from "./components/Home";
+import {Redireccionar } from "./components/Home";
 import { ModalNombre } from "./components/ModalNombre";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <Redireccionar />
   },
   {
     path: '/counter',

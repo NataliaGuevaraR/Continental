@@ -122,7 +122,7 @@ namespace Project2.Controllers
             using var con = new SqlConnection(cs);
             con.Open();
 
-			con.Query("update jugador set nombre = ''");
+			//con.Query("update jugador set nombre = ''");
             //con.Query("update juego set ronda_actual = 0");
             con.Query("update carta set estado = 0");
             con.Query("update jugador set puntos = 0, estado = 0");

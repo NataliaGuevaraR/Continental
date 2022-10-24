@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Link} from 'react-router-dom';
+import { Link, useNavigate, Routes, Route } from 'react-router-dom';
 import { ModalNombre } from './ModalNombre';
-
+import { Mesa } from './Mesa';
+import { Reglas } from './Reglas';
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -11,10 +12,16 @@ export class Home extends Component {
             isModalOpen: false,
         }
     }
-
+        modalToHome = (answer) => {
+        this.setState({
+            isModalOpen: answer
+        })
+        this.reiniciar();
+        this.props.navigate("/mesa");
+    }
+    
     render() {
         return (
-
             <div class="container-md text-center">
                 <div>
                     <p>Aquí va la imagen principal del juego</p>
@@ -25,12 +32,24 @@ export class Home extends Component {
                 <div>
                     <button class="btn btn-primary" onClick={this.toggleUserModal}><h1 class="text-white">Comenzar juego nuevo</h1></button>
                     {this.state.isModalOpen ?
-                        <ModalNombre
+                        <ModalNombre modalToHome={this.modalToHome }
                         />
                         : null}
                 </div>
+                <Routes>
+                    <Route path="/mesa" element={<Mesa />} />
+                    <Route path="/reglas" element={<Reglas />} />
+                </Routes>
             </div>
         );
+    }
+
+    reiniciar() {
+        fetch('carta/Reiniciar', {
+            method: 'POST',
+            mode: 'cors',
+            body: ''
+        })
     }
 
     toggleUserModal = () => {
@@ -38,4 +57,8 @@ export class Home extends Component {
             return { isModalOpen: !state.isModalOpen }
         })
     }
+}
+export function Redireccionar(props) {
+    const navigate = useNavigate();
+    return (<Home navigate={navigate} />);  
 }
