@@ -46,7 +46,7 @@ export class Mesa extends Component {
       <div>
         <h1 id="tabelLabel" >Continental</h1>
         <p> puntaje </p>
-            <button className="btn btn-primary" onClick={this.reiniciar}>Reiniciar</button>
+            <button className="btn btn-primary" onClick={this.reiniciar}>Juego nuevo</button>
             <button className="btn btn-primary" onClick={this.repartir}>Repartir</button>
         {contents}
       </div>
