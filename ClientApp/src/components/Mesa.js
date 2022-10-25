@@ -26,12 +26,12 @@ export class Mesa extends Component {
             <th>Carta</th>
           </tr>
         </thead>
-        <tbody>
+            <tbody>
+                <div class="container-md">
           {cartas.map(carta =>
-              <tr key={carta.id}>
-                  <img src={require(`${carta.imagen}`)} />
-              </tr>
-          )}
+              <img class="img-fluid" src={require(`${carta.imagen}`)} alt=""/>
+                    )}
+                </div>
         </tbody>
       </table>
     );
