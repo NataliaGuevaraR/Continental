@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
-import {Card, Container, Col, Row, Button} from 'reactstrap';
+import { Card, Container, Col, Row, Button } from 'reactstrap';
+import { ModalReiniciar } from './ModalReiniciar';
 
 export class Mesa extends Component {
   static displayName = Mesa.name;
 
   constructor(props) {
     super(props);
-    this.state = { cartas: [], loading: true };
-  }
+      this.state = {
+          cartas: [],
+          loading: true,
+          isModalOpen: false,
+      };
+    }
+    modalToMesa = (answer) => {
+        this.setState({
+            isModalOpen: answer
+        })
+    }
 
     componentDidMount() {
         this.interval = setInterval(() => this.populateCartas(), 1000);
@@ -33,9 +43,9 @@ export class Mesa extends Component {
                     {cartas.map(carta =>
                         <Col>
                             <Card>
-                                <Button>
-                                    <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
-                                </Button>
+                                <img src={require(`${carta.imagen}`)} class="tarjeta" alt="">
+                                     
+                                </img>
                             </Card>
                         </Col>
                         )}
@@ -55,7 +65,11 @@ export class Mesa extends Component {
       <div>
         <h1 id="tabelLabel" >Continental</h1>
         <p> puntaje </p>
-            <button className="btn btn-primary" onClick={this.reiniciar}>Juego nuevo</button>
+            <button className="btn btn-primary" onClick={this.toggleUserModal}>Juego nuevo</button>
+            {this.state.isModalOpen ?
+                <ModalReiniciar modalToMesa={this.modalToMesa}
+                />
+                : null}
             <button className="btn btn-primary" onClick={this.repartir}>Repartir</button>
         {contents}
       </div>
@@ -76,17 +90,32 @@ export class Mesa extends Component {
  
 
     repartir() {
-        //this.setState({ cartas: [], loading: true });
-
         fetch('carta/Repartir', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'POST',
             mode: 'cors',
-            body: ''
+            body: JSON.stringify("1")
         })
     }
 
+    toggleUserModal = () => {
+        this.setState((state) => {
+            return { isModalOpen: !state.isModalOpen }
+        })
+    }
+
+
   async populateCartas() {
-    const response = await fetch('carta/GetCartas');
+      const response = await fetch('carta/GetCartas', {
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify(2)
+      });
     const data = await response.json();
     this.setState({  cartas: data, loading: false });
   }
