@@ -3,6 +3,10 @@ a {
   color: #0366d6;
 }
 
+.body{
+    background-image: url('./components/Imagenes/background.jpg');
+}
+
 code {
   color: #E01A76;
 }
@@ -13,4 +17,7 @@ code {
   border-color: #1861ac;
 }
 
+.tarjeta{
+  max-width: 150px;
+}
 

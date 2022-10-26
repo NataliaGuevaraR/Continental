@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Card, Container, Col, Row, Button} from 'reactstrap';
 
 export class Mesa extends Component {
   static displayName = Mesa.name;
@@ -19,7 +20,7 @@ export class Mesa extends Component {
 
 
     static renderCartas(cartas) {
-    return (
+        return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
           <tr>
@@ -27,17 +28,25 @@ export class Mesa extends Component {
           </tr>
         </thead>
             <tbody>
-                <div class="container-md">
-          {cartas.map(carta =>
-              <img class="img-fluid" src={require(`${carta.imagen}`)} alt=""/>
-                    )}
-                </div>
+                <Container>
+                    <Row>
+                    {cartas.map(carta =>
+                        <Col>
+                            <Card>
+                                <Button>
+                                    <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
+                                </Button>
+                            </Card>
+                        </Col>
+                        )}
+                    </Row>
+                </Container>
         </tbody>
-      </table>
+                </table>
     );
   }
 
-  render() {
+    render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
         : Mesa.renderCartas(this.state.cartas);
@@ -50,6 +59,7 @@ export class Mesa extends Component {
             <button className="btn btn-primary" onClick={this.repartir}>Repartir</button>
         {contents}
       </div>
+
     );
     }
 
@@ -81,3 +91,4 @@ export class Mesa extends Component {
     this.setState({  cartas: data, loading: false });
   }
 }
+
