@@ -27,116 +27,116 @@ namespace Project2.Controllers
 		_logger = logger;
 		_config = config;
 		}
-	
+
 		// sumar puntos
 		public string Sumar_puntos(int jugadorId, int ronda, int puntos)
-        {
-            string aux_jugador = jugadorId == 1 ? "puntos_jugador_1" : "puntos_jugador_2";
+		{
+		string aux_jugador = jugadorId == 1 ? "puntos_jugador_1" : "puntos_jugador_2";
 
-            var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
-            using var con = new SqlConnection(cs);
+		using var con = new SqlConnection(cs);
 
-            con.Open();
+		con.Open();
 
-            con.Query("update juego set ronda_actual = " + (ronda+1).ToString());
-            con.Query("update jugador set puntos = " + puntos.ToString() + " WHERE id = " + jugadorId.ToString());
-            con.Query("update ronda set " + aux_jugador + " = " + puntos.ToString() + " where numero_ronda = " + ronda.ToString());
+		con.Query("update juego set ronda_actual = " + (ronda + 1).ToString());
+		con.Query("update jugador set puntos = " + puntos.ToString() + " WHERE id = " + jugadorId.ToString());
+		con.Query("update ronda set " + aux_jugador + " = " + puntos.ToString() + " where numero_ronda = " + ronda.ToString());
 
-            con.Close();
+		con.Close();
 		//Repartir((ronda + 1).ToString());//Repartir((ronda + 1).ToString());
-			Repartir();
+		Repartir();
 
 		return "Usted ha sumado " + puntos.ToString() + " puntos";
-        }
+		}
 
-        // validar una escalera 
-        public bool ValidarEscalera (List<Carta> cartas)
-        {
-            if(cartas.GroupBy(x => x.Casta).Count() > 1)
-                return false;
+		// validar una escalera 
+		public bool ValidarEscalera(List<Carta> cartas)
+		{
+		if (cartas.GroupBy(x => x.Casta).Count() > 1)
+			return false;
 
-            if (cartas.Count != 4)
-                return false;
+		if (cartas.Count != 4)
+			return false;
 
-            if (cartas.Any(x => x.Letra == "A") && ((cartas.Any(x => x.Letra == "2") && cartas.Any(x => x.Letra == "3") && cartas.Any(x => x.Letra == "4")) || (cartas.Any(x => x.Letra == "J") && cartas.Any(x => x.Letra == "Q") && cartas.Any(x => x.Letra == "K"))))
-                return true;
-            else if (cartas[0].Id == (cartas[3].Id - 3))
-                return true;
-            return false;
-        }
-        
-        // validar dos escaleras
-        public bool ValidarDosEscaleras (List<List<Carta>> cartas_ordenadas_x_casta, int numero_castas)
-        {          
-            if (numero_castas == 2 && ValidarEscalera(cartas_ordenadas_x_casta[0]) && ValidarEscalera(cartas_ordenadas_x_casta[1]))
-                return true;
-            else if (numero_castas == 1)
-            {
-                var primera_escalera = cartas_ordenadas_x_casta[0].Take(4).ToList();
-                var segunda_escalera = cartas_ordenadas_x_casta[0].Except(primera_escalera).ToList();
+		if (cartas.Any(x => x.Letra == "A") && ((cartas.Any(x => x.Letra == "2") && cartas.Any(x => x.Letra == "3") && cartas.Any(x => x.Letra == "4")) || (cartas.Any(x => x.Letra == "J") && cartas.Any(x => x.Letra == "Q") && cartas.Any(x => x.Letra == "K"))))
+			return true;
+		else if (cartas[0].Id == (cartas[3].Id - 3))
+			return true;
+		return false;
+		}
 
-                if (ValidarEscalera(primera_escalera) && ValidarEscalera(segunda_escalera))
-                    return true;
+		// validar dos escaleras
+		public bool ValidarDosEscaleras(List<List<Carta>> cartas_ordenadas_x_casta, int numero_castas)
+		{
+		if (numero_castas == 2 && ValidarEscalera(cartas_ordenadas_x_casta[0]) && ValidarEscalera(cartas_ordenadas_x_casta[1]))
+			return true;
+		else if (numero_castas == 1)
+		{
+		var primera_escalera = cartas_ordenadas_x_casta[0].Take(4).ToList();
+		var segunda_escalera = cartas_ordenadas_x_casta[0].Except(primera_escalera).ToList();
 
-                if (cartas_ordenadas_x_casta[0].Any(x => x.Letra == "A"))
-                {
-                    var lista_a = cartas_ordenadas_x_casta[0].Where(x => x.Letra != "A").Concat(cartas_ordenadas_x_casta[0].Where(x => x.Letra == "A")).ToList();
-                    primera_escalera = lista_a.Take(4).ToList();
-                    segunda_escalera = lista_a.Except(primera_escalera).ToList();
+		if (ValidarEscalera(primera_escalera) && ValidarEscalera(segunda_escalera))
+			return true;
 
-                    if (ValidarEscalera(primera_escalera) && ValidarEscalera(segunda_escalera))
-                        return true;
-                }
-            }
-            return false;
-        }
+		if (cartas_ordenadas_x_casta[0].Any(x => x.Letra == "A"))
+		{
+		var lista_a = cartas_ordenadas_x_casta[0].Where(x => x.Letra != "A").Concat(cartas_ordenadas_x_casta[0].Where(x => x.Letra == "A")).ToList();
+		primera_escalera = lista_a.Take(4).ToList();
+		segunda_escalera = lista_a.Except(primera_escalera).ToList();
 
-        // Obtener cartas
-        [HttpPost] 
-        [Route("GetCartas")]
-        public List<Carta> Get([FromBody] JsonElement contents)
-        {
-			String content = contents.ToString();
+		if (ValidarEscalera(primera_escalera) && ValidarEscalera(segunda_escalera))
+			return true;
+		}
+		}
+		return false;
+		}
 
-            var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+		// Obtener cartas
+		[HttpPost]
+		[Route("GetCartas")]
+		public List<Carta> Get([FromBody] JsonElement contents)
+		{
+		String content = contents.ToString();
 
-            using var con = new SqlConnection(cs);
-            con.Open();
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
-            var cartas = con.Query<Carta>("SELECT * FROM carta where estado="+content+";").ToList();
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		var cartas = con.Query<Carta>("SELECT * FROM carta where estado=" + content + ";").ToList();
 
 
-            cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/"+ cartas.Id +".png"); 
+		cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/" + cartas.Id + ".png");
 
-            con.Close();
+		con.Close();
 
-            return cartas;
+		return cartas;
 
-        }
+		}
 
 		// Reiniciar juego
 		[HttpPost]
-        [Route("Reiniciar")]
-        public void Reiniciar()
-        {
-            var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+		[Route("Reiniciar")]
+		public void Reiniciar()
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
-            using var con = new SqlConnection(cs);
-            con.Open();
+		using var con = new SqlConnection(cs);
+		con.Open();
 
-			//con.Query("update jugador set nombre = ''");
-            con.Query("update juego set ronda_actual = 7");
-            con.Query("update carta set estado = 0");
-            con.Query("update jugador set puntos = 0, estado = 0");
-            con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
+		//con.Query("update jugador set nombre = ''");
+		con.Query("update juego set ronda_actual = 7");
+		con.Query("update carta set estado = 0");
+		con.Query("update jugador set puntos = 0, estado = 0");
+		con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
 
-            con.Close();
-        }
+		con.Close();
+		}
 
-        // Repartir cartas
-        [HttpPost]
-        [Route("Repartir")]
+		// Repartir cartas
+		[HttpPost]
+		[Route("Repartir")]
 		public void Repartir()
 		{
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
@@ -157,30 +157,30 @@ namespace Project2.Controllers
 		[Route("GuardarNombre")]
 		public void GuardarNombre([FromBody] JsonElement content)
 		{
-			String name = content.ToString();
+		String name = content.ToString();
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
-			using var con = new SqlConnection(cs);
-			con.Open();
+		using var con = new SqlConnection(cs);
+		con.Open();
 
-			SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
-			SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
-			String nombre_1 = "";
+		SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
+		SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
+		String nombre_1 = "";
 
-			while (dataReader.Read()) {
-				nombre_1 = nombre_1 + dataReader.GetValue(0);
-			}
-			dataReader.Close();
-		
-			int id = 1;
+		while (dataReader.Read()) {
+		nombre_1 = nombre_1 + dataReader.GetValue(0);
+		}
+		dataReader.Close();
 
-			if (nombre_1 != "                    ")
-				id = 2;
-			
-			con.Query("update jugador set nombre = "+ "'" + name + "'" +" where id = "+ id);
+		int id = 1;
 
-			con.Close();
+		if (nombre_1 != "                    ")
+			id = 2;
+
+		con.Query("update jugador set nombre = " + "'" + name + "'" + " where id = " + id);
+
+		con.Close();
 		}
 
 		// Cambiar estado carta TO DO
@@ -189,6 +189,44 @@ namespace Project2.Controllers
 		public void CambiarEstado(int IdJugador, int IdCarta)
 		{
 
+		}
+
+		// get datos jugador
+		[HttpPost]
+		[Route("GetDatosJugador")]
+		public string[] GetDatosJugador(int IdJugador)
+		{
+		string[] DatosJugador = { "" };
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		DatosJugador[0] = con.Query<string>("SELECT nombre FROM jugador where id = " + IdJugador).First();
+		DatosJugador[1] = con.Query<string>("SELECT estado FROM jugador where id = " + IdJugador).First();
+		DatosJugador[2] = con.Query<string>("SELECT puntos FROM jugador where id = " + IdJugador).First();
+
+		con.Close();
+		return DatosJugador;
+		}
+
+		// get puntos por ronda
+		[HttpPost]
+		[Route("GetPuntosRonda")]
+		public List<Ronda> GetPuntosRonda([FromBody] JsonElement contents)
+		{
+		String content = contents.ToString();
+
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		var rondas = con.Query<Carta>("SELECT * FROM ronda ;").ToList();
+
+		con.Close();
+
+		return rondas;
 		}
 
 		// Validar segun turno
