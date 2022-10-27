@@ -27,8 +27,7 @@ namespace Project2.Controllers
 		_logger = logger;
 		_config = config;
 		}
-
-			
+	
 		// sumar puntos
 		public string Sumar_puntos(int jugadorId, int ronda, int puntos)
         {
@@ -116,23 +115,6 @@ namespace Project2.Controllers
 
         }
 
-		/*public List<Carta> Get()
-		{
-		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
-
-		using var con = new SqlConnection(cs);
-		con.Open();
-
-		var cartas = con.Query<Carta>("SELECT * FROM carta").ToList();
-
-		cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/" + cartas.Id + ".png");
-
-		con.Close();
-
-		return cartas;
-
-		}*/
-
 		// Reiniciar juego
 		[HttpPost]
         [Route("Reiniciar")]
@@ -144,7 +126,7 @@ namespace Project2.Controllers
             con.Open();
 
 			//con.Query("update jugador set nombre = ''");
-            con.Query("update juego set ronda_actual = 0");
+            con.Query("update juego set ronda_actual = 7");
             con.Query("update carta set estado = 0");
             con.Query("update jugador set puntos = 0, estado = 0");
             con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
@@ -163,8 +145,8 @@ namespace Project2.Controllers
 		con.Open();
 
 		int ronda = con.Query<int>("SELECT ronda_actual FROM juego").First();
-
-		con.Query("exec Repartir " + ronda);
+		int ronda1 = ronda + 5;
+		con.Query("exec Repartir " + ronda1);
 
 		con.Close();
 
@@ -201,9 +183,9 @@ namespace Project2.Controllers
 			con.Close();
 		}
 
-		// Cambiar estado carta
+		// Cambiar estado carta TO DO
 		[HttpPost]
-		[Route("CambioEstado")]
+		[Route("CambioEstadoCarta")]
 		public void CambiarEstado(int IdJugador, int IdCarta)
 		{
 
@@ -212,10 +194,8 @@ namespace Project2.Controllers
 		// Validar segun turno
 		[HttpPost]
         [Route("Validar")]
-        public string Validar(/*int jugadorId*/)
+        public string Validar(int jugadorId)
         {
-            int jugadorId = 1;
-
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);
@@ -344,7 +324,6 @@ namespace Project2.Controllers
 
                 default:
                     break;
-                
             }
             return "Imposible";
         }
