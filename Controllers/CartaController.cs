@@ -184,31 +184,38 @@ namespace Project2.Controllers
 		[Route("GuardarNombre")]
 		public void GuardarNombre([FromBody] JsonElement content)
 		{
-		String name = content.ToString();
-
-		Console.WriteLine("JODEEEERRRRR");
+			String name = content.ToString();
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
-		using var con = new SqlConnection(cs);
-		con.Open();
+			using var con = new SqlConnection(cs);
+			con.Open();
 
-		SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
-		SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
-		String nombre_1 = "";
-		while (dataReader.Read()) {
-			nombre_1 = nombre_1 + dataReader.GetValue(0);
-		}
-		dataReader.Close();
+			SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
+			SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
+			String nombre_1 = "";
+
+			while (dataReader.Read()) {
+				nombre_1 = nombre_1 + dataReader.GetValue(0);
+			}
+			dataReader.Close();
 		
-		int id = 1;
+			int id = 1;
 
-		if (nombre_1 != "                    ")
-			id = 2;
+			if (nombre_1 != "                    ")
+				id = 2;
 			
-		con.Query("update jugador set nombre = "+ "'" + name + "'" +" where id = "+ id);
+			con.Query("update jugador set nombre = "+ "'" + name + "'" +" where id = "+ id);
 
-		con.Close();
+			con.Close();
+		}
+
+		// Cambiar estado carta
+		[HttpPost]
+		[Route("CambioEstado")]
+		public void CambiarEstado(int IdJugador, int IdCarta)
+		{
+
 		}
 
 		// Validar segun turno
