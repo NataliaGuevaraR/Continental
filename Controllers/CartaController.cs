@@ -93,18 +93,19 @@ namespace Project2.Controllers
         }
 
         // Obtener cartas
-        [HttpGet] 
+        [HttpPost] 
         [Route("GetCartas")]
-        public List<Carta> Get([FromBody] JsonElement content)
+        public List<Carta> Get([FromBody] JsonElement contents)
         {
-			String contents = content.ToString();
-		Console.WriteLine("RESULTADO: " + contents.ToString() + ("FIN"));
+			String content = contents.ToString();
+
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);
             con.Open();
 
-            var cartas = con.Query<Carta>("SELECT * FROM carta where estado="+contents+";").ToList();
+            var cartas = con.Query<Carta>("SELECT * FROM carta where estado="+content+";").ToList();
+
 
             cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/"+ cartas.Id +".png"); 
 
@@ -114,7 +115,7 @@ namespace Project2.Controllers
 
         }
 
-		public List<Carta> Get()
+		/*public List<Carta> Get()
 		{
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
@@ -129,7 +130,7 @@ namespace Project2.Controllers
 
 		return cartas;
 
-		}
+		}*/
 
 		// Reiniciar juego
 		[HttpPost]
@@ -184,6 +185,8 @@ namespace Project2.Controllers
 		public void GuardarNombre([FromBody] JsonElement content)
 		{
 		String name = content.ToString();
+
+		Console.WriteLine("JODEEEERRRRR");
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 

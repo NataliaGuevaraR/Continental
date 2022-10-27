@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Container, Col, Row, Button } from 'reactstrap';
+import { Container, Col, Row, Button } from 'reactstrap';
 import { ModalReiniciar } from './ModalReiniciar';
 
 export class Mesa extends Component {
@@ -42,11 +42,11 @@ export class Mesa extends Component {
                     <Row>
                     {cartas.map(carta =>
                         <Col>
-                            <Card>
+                            <Button>
                                 <img src={require(`${carta.imagen}`)} class="tarjeta" alt="">
                                      
                                 </img>
-                            </Card>
+                            </Button>
                         </Col>
                         )}
                     </Row>
@@ -114,7 +114,7 @@ export class Mesa extends Component {
           },
           method: 'POST',
           mode: 'cors',
-          body: JSON.stringify(2)
+          body: 2
       });
     const data = await response.json();
     this.setState({  cartas: data, loading: false });

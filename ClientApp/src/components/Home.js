@@ -61,7 +61,7 @@ export class Home extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify(1)
+            body: JSON.stringify(2)
         })
     }
 
