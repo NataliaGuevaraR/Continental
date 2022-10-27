@@ -115,23 +115,6 @@ namespace Project2.Controllers
 
         }
 
-		/*public List<Carta> Get()
-		{
-		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
-
-		using var con = new SqlConnection(cs);
-		con.Open();
-
-		var cartas = con.Query<Carta>("SELECT * FROM carta").ToList();
-
-		cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/" + cartas.Id + ".png");
-
-		con.Close();
-
-		return cartas;
-
-		}*/
-
 		// Reiniciar juego
 		[HttpPost]
         [Route("Reiniciar")]
@@ -182,11 +165,10 @@ namespace Project2.Controllers
 		// Guardar nombre
 		[HttpPost]
 		[Route("GuardarNombre")]
-		public void GuardarNombre([FromBody] JsonElement content)
+		public int GuardarNombre([FromBody] JsonElement content)
 		{
 		String name = content.ToString();
 
-		Console.WriteLine("JODEEEERRRRR");
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
@@ -209,14 +191,16 @@ namespace Project2.Controllers
 		con.Query("update jugador set nombre = "+ "'" + name + "'" +" where id = "+ id);
 
 		con.Close();
+
+		return id;
 		}
 
 		// Validar segun turno
 		[HttpPost]
         [Route("Validar")]
-        public string Validar(/*int jugadorId*/)
+        public string Validar([FromBody] JsonElement content)
         {
-            int jugadorId = 1;
+            int jugadorId = int.Parse(content.ToString());
 
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
@@ -350,5 +334,88 @@ namespace Project2.Controllers
             }
             return "Imposible";
         }
-    }
+		// Limpiar nombre al empezar cada juego
+		[HttpPost]
+		[Route("LimpiarNombre")]
+		public void Limpiar()
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		con.Query("update jugador set nombre = ''");
+
+		con.Close();
+
+		}
+
+		// Obtener datos del jugador
+		[HttpPost]
+		[Route("GetDatosJugador")]
+		public string[] GetDatosJugador([FromBody] JsonElement content)
+		{
+		string[] datos = {"","" };
+
+		string idJugador = content.ToString();
+
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		SqlCommand nombre_receive = new SqlCommand("select nombre from jugador where id= "+idJugador+";", con);
+		SqlDataReader dataReader = nombre_receive.ExecuteReader();
+		string reader = "";
+		while (dataReader.Read())
+		{
+			reader = reader + dataReader.GetValue(0);
+		}
+
+		datos[0] = reader;
+
+		SqlCommand puntos_receive = new SqlCommand("select puntos from jugador where id= " + idJugador + ";", con);
+		dataReader = puntos_receive.ExecuteReader();
+		reader = "";
+		while (dataReader.Read())
+		{
+			reader = reader + dataReader.GetValue(0);
+		}
+
+		datos[1] = reader;
+		dataReader.Close();
+
+		con.Close();
+
+		return datos;
+
+		}
+
+		// Obtener número de ronda
+		[HttpPost]
+		[Route("GetRonda")]
+		public string GetRonda()
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		
+		con.Open();
+
+		SqlCommand ronda_receive = new SqlCommand("select * from juego", con);
+		SqlDataReader dataReader = ronda_receive.ExecuteReader();
+		string reader = "";
+		while (dataReader.Read())
+		{
+			reader = reader + dataReader.GetValue(0);
+		}
+		dataReader.Close();
+
+		con.Close();
+
+		string ronda = reader;
+
+		return ronda;
+		}
+	}
 	}

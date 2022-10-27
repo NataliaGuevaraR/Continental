@@ -35,12 +35,21 @@ export class ModalReiniciar extends Component {
 
     handleButton() {
         this.reiniciar();
+        this.limpiarNombre();
         this.toggle();
         this.props.modalToHome(false);
     }
 
     reiniciar() {
         fetch('carta/Reiniciar', {
+            method: 'POST',
+            mode: 'cors',
+            body: ''
+        })
+    }
+
+    limpiarNombre() {
+        fetch('carta/LimpiarNombre', {
             method: 'POST',
             mode: 'cors',
             body: ''
