@@ -16,7 +16,9 @@ export class Home extends Component {
         this.setState({
             isModalOpen: answer
         })
-        this.reiniciar();
+            this.reiniciar();
+            this.repartir();
+
         this.props.navigate("/mesa");
     }
     
@@ -49,6 +51,17 @@ export class Home extends Component {
             method: 'POST',
             mode: 'cors',
             body: ''
+        })
+    }
+
+    repartir() {
+        fetch('carta/Repartir', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(2)
         })
     }
 

@@ -93,16 +93,19 @@ namespace Project2.Controllers
         }
 
         // Obtener cartas
-        [HttpGet] 
+        [HttpPost] 
         [Route("GetCartas")]
-        public List<Carta> Get()
+        public List<Carta> Get([FromBody] JsonElement contents)
         {
+			String content = contents.ToString();
+
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);
             con.Open();
 
-            var cartas = con.Query<Carta>("SELECT * FROM carta").ToList();
+            var cartas = con.Query<Carta>("SELECT * FROM carta where estado="+content+";").ToList();
+
 
             cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/"+ cartas.Id +".png"); 
 
@@ -112,8 +115,25 @@ namespace Project2.Controllers
 
         }
 
-        // Reiniciar juego
-        [HttpPost]
+		/*public List<Carta> Get()
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		var cartas = con.Query<Carta>("SELECT * FROM carta").ToList();
+
+		cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/" + cartas.Id + ".png");
+
+		con.Close();
+
+		return cartas;
+
+		}*/
+
+		// Reiniciar juego
+		[HttpPost]
         [Route("Reiniciar")]
         public void Reiniciar()
         {
@@ -123,29 +143,41 @@ namespace Project2.Controllers
             con.Open();
 
 			//con.Query("update jugador set nombre = ''");
-            //con.Query("update juego set ronda_actual = 0");
+            con.Query("update juego set ronda_actual = 0");
             con.Query("update carta set estado = 0");
             con.Query("update jugador set puntos = 0, estado = 0");
-            //con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
+            con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
 
             con.Close();
-            Repartir("6");
         }
 
         // Repartir cartas
         [HttpPost]
         [Route("Repartir")]
-        public void Repartir(string ronda)
+        public void Repartir([FromBody] JsonElement content)
         {
-            var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+			String ronda = content.ToString();
+			var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);
             con.Open();
 
-            //con.Query("exec Repartir "+ ronda);
+            con.Query("exec Repartir "+ ronda);
 
             con.Close();
         }
+
+		public void Repartir(String ronda)
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		con.Query("exec Repartir " + ronda);
+
+		con.Close();
+		}
 
 		// Guardar nombre
 		[HttpPost]
@@ -153,6 +185,8 @@ namespace Project2.Controllers
 		public void GuardarNombre([FromBody] JsonElement content)
 		{
 		String name = content.ToString();
+
+		Console.WriteLine("JODEEEERRRRR");
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 

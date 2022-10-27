@@ -1,12 +1,23 @@
 import React, { Component } from 'react';
+import { Container, Col, Row, Button } from 'reactstrap';
+import { ModalReiniciar } from './ModalReiniciar';
 
 export class Mesa extends Component {
   static displayName = Mesa.name;
 
   constructor(props) {
     super(props);
-    this.state = { cartas: [], loading: true };
-  }
+      this.state = {
+          cartas: [],
+          loading: true,
+          isModalOpen: false,
+      };
+    }
+    modalToMesa = (answer) => {
+        this.setState({
+            isModalOpen: answer
+        })
+    }
 
     componentDidMount() {
         this.interval = setInterval(() => this.populateCartas(), 1000);
@@ -19,7 +30,7 @@ export class Mesa extends Component {
 
 
     static renderCartas(cartas) {
-    return (
+        return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
           <tr>
@@ -27,17 +38,25 @@ export class Mesa extends Component {
           </tr>
         </thead>
             <tbody>
-                <div class="container-md">
-          {cartas.map(carta =>
-              <img class="img-fluid" src={require(`${carta.imagen}`)} alt=""/>
-                    )}
-                </div>
+                <Container>
+                    <Row>
+                    {cartas.map(carta =>
+                        <Col>
+                            <Button>
+                                <img src={require(`${carta.imagen}`)} class="tarjeta" alt="">
+                                     
+                                </img>
+                            </Button>
+                        </Col>
+                        )}
+                    </Row>
+                </Container>
         </tbody>
-      </table>
+                </table>
     );
   }
 
-  render() {
+    render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
         : Mesa.renderCartas(this.state.cartas);
@@ -46,10 +65,15 @@ export class Mesa extends Component {
       <div>
         <h1 id="tabelLabel" >Continental</h1>
         <p> puntaje </p>
-            <button className="btn btn-primary" onClick={this.reiniciar}>Juego nuevo</button>
+            <button className="btn btn-primary" onClick={this.toggleUserModal}>Juego nuevo</button>
+            {this.state.isModalOpen ?
+                <ModalReiniciar modalToMesa={this.modalToMesa}
+                />
+                : null}
             <button className="btn btn-primary" onClick={this.repartir}>Repartir</button>
         {contents}
       </div>
+
     );
     }
 
@@ -66,18 +90,34 @@ export class Mesa extends Component {
  
 
     repartir() {
-        //this.setState({ cartas: [], loading: true });
-
         fetch('carta/Repartir', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'POST',
             mode: 'cors',
-            body: ''
+            body: JSON.stringify("1")
         })
     }
 
+    toggleUserModal = () => {
+        this.setState((state) => {
+            return { isModalOpen: !state.isModalOpen }
+        })
+    }
+
+
   async populateCartas() {
-    const response = await fetch('carta/GetCartas');
+      const response = await fetch('carta/GetCartas', {
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          mode: 'cors',
+          body: 2
+      });
     const data = await response.json();
     this.setState({  cartas: data, loading: false });
   }
 }
+
