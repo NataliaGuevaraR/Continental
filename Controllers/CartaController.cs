@@ -6,31 +6,31 @@ using System.Text.Json;
 
 namespace Project2.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CartaController : ControllerBase
-    {
-        private readonly IConfiguration _config;
-        private readonly ILogger<CartaController> _logger;
-        private readonly List<string> valores_cartas = new()
-        {
-            "A","2","3", "4","5", "6","7", "8","9", "10","J", "Q", "K"
-        };
-        private readonly List<string> cartas_precindibles = new()
-        {
-            "A","5","6","9","10"
-        };
+	[ApiController]
+	[Route("[controller]")]
+	public class CartaController : ControllerBase
+	{
+		private readonly IConfiguration _config;
+		private readonly ILogger<CartaController> _logger;
+		private readonly List<string> valores_cartas = new()
+		{
+			"A","2","3", "4","5", "6","7", "8","9", "10","J", "Q", "K"
+		};
+		private readonly List<string> cartas_precindibles = new()
+		{
+			"A","5","6","9","10"
+		};
 
 
-        public CartaController(ILogger<CartaController> logger, IConfiguration config)
-        {
-            _logger = logger;
-            _config = config;
-        }
+		public CartaController(ILogger<CartaController> logger, IConfiguration config)
+		{
+		_logger = logger;
+		_config = config;
+		}
 
-
-        // sumar puntos
-        public string Sumar_puntos(int jugadorId, int ronda, int puntos)
+			
+		// sumar puntos
+		public string Sumar_puntos(int jugadorId, int ronda, int puntos)
         {
             string aux_jugador = jugadorId == 1 ? "puntos_jugador_1" : "puntos_jugador_2";
 
@@ -45,9 +45,10 @@ namespace Project2.Controllers
             con.Query("update ronda set " + aux_jugador + " = " + puntos.ToString() + " where numero_ronda = " + ronda.ToString());
 
             con.Close();
-            Repartir((ronda + 1).ToString());
+		//Repartir((ronda + 1).ToString());//Repartir((ronda + 1).ToString());
+			Repartir();
 
-            return "Usted ha sumado "+ puntos.ToString() + " puntos";
+		return "Usted ha sumado " + puntos.ToString() + " puntos";
         }
 
         // validar una escalera 
@@ -154,29 +155,19 @@ namespace Project2.Controllers
         // Repartir cartas
         [HttpPost]
         [Route("Repartir")]
-        public void Repartir([FromBody] JsonElement content)
-        {
-			String ronda = content.ToString();
-			var cs = _config.GetValue<string>("ConnectionStrings:Connection");
-
-            using var con = new SqlConnection(cs);
-            con.Open();
-
-            con.Query("exec Repartir "+ ronda);
-
-            con.Close();
-        }
-
-		public void Repartir(String ronda)
+		public void Repartir()
 		{
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
 
+		int ronda = con.Query<int>("SELECT ronda_actual FROM juego").First();
+
 		con.Query("exec Repartir " + ronda);
 
 		con.Close();
+
 		}
 
 		// Guardar nombre
