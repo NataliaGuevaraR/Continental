@@ -222,7 +222,7 @@ namespace Project2.Controllers
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		var rondas = con.Query<Carta>("SELECT * FROM ronda ;").ToList();
+		List<Ronda> rondas = con.Query<Ronda>("SELECT * FROM ronda ;".ToString()).ToList();
 
 		con.Close();
 
