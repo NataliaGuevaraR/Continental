@@ -155,7 +155,7 @@ namespace Project2.Controllers
 		// Guardar nombre
 		[HttpPost]
 		[Route("GuardarNombre")]
-		public void GuardarNombre([FromBody] JsonElement content)
+		public int GuardarNombre([FromBody] JsonElement content)
 		{
 		String name = content.ToString();
 
@@ -181,6 +181,7 @@ namespace Project2.Controllers
 		con.Query("update jugador set nombre = " + "'" + name + "'" + " where id = " + id);
 
 		con.Close();
+		return id;
 		}
 
 		// Cambiar estado carta TO DO
@@ -194,9 +195,10 @@ namespace Project2.Controllers
 		// get datos jugador
 		[HttpPost]
 		[Route("GetDatosJugador")]
-		public string[] GetDatosJugador(int IdJugador)
+		public string[] GetDatosJugador([FromBody] JsonElement content)
 		{
-		string[] DatosJugador = { "" };
+		int IdJugador = int.Parse(content.ToString());
+		string[] DatosJugador = { "", "", "" };
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
