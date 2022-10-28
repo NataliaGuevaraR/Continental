@@ -111,7 +111,7 @@ export class Mesa extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify("1")
+            body: ''
         })
     }
 
