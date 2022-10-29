@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
 import { Container, Col, Row, Button } from 'reactstrap';
 import { ModalReiniciar } from './ModalReiniciar';
+import { useLocation } from "react-router-dom";
 
 export class Mesa extends Component {
   static displayName = Mesa.name;
 
   constructor(props) {
-    super(props);
+      super(props);
+      this.idJugador = props.idJugador;
       this.state = {
           cartas: [],
           loading: true,
           isModalOpen: false,
-          ronda: this.props.ronda,
+          ronda: props.ronda,
           validado: "",
           jugador: {
-              nombreJugador : this.props.nombreJugador,
-              idJugador : this.props.idJugador,
-              puntosJugador : this.props.puntosJugador
+              nombreJugador: props.nombreJugador,
+              puntosJugador: props.puntosJugador,
+              estadoJugador : props.estadoJugador
           }
       };
       
@@ -29,7 +31,7 @@ export class Mesa extends Component {
 
     componentDidMount() {
         this.interval = setInterval(() => this.populateCartas(), 1000);
-        
+        this.interval = setInterval(() => this.datosJugador(), 1000);
     }
 
     componentWillUnmount() {
@@ -62,23 +64,29 @@ export class Mesa extends Component {
         </tbody>
                 </table>
     );
-  }
+    }
 
-    render() {
+    renderJugador() {
+    return(
+        <div>
+            <h1>ID:</h1> {this.state.jugador.idJugador}
+            <h2>Nombre: </h2> {this.state.jugador.nombreJugador}
+            <h2>Puntos: </h2> {this.state.jugador.puntosJugador}
+            <h2>Estado: </h2> {this.state.jugador.estadoJugador }
+            </div>
+        )
+    }
+
+
+    render() {    
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
             : Mesa.renderCartas(this.state.cartas);
-            this.datosJugador(this.state.jugador.idJugador);
-            this.rondaActual();        
 
     return (
-      <div>
-            <h1 id="tabelLabel" >ID: {this.state.jugador.idJugador }</h1>
-            <p> Nombre: {this.state.jugador.nombreJugador} </p>
-            <p> Puntos: {this.state.jugador.puntosJugador} </p>
-            <p> Ronda: {this.state.ronda} </p>
-            <p> Validación: {this.state.validado} </p>
-
+        <div>
+            <h1>Id de prueba: {this.idJugador }</h1>
+            {this.renderJugador()}
             <button className="btn btn-primary" onClick={this.toggleUserModal}>Juego nuevo</button>
             {this.state.isModalOpen ?
                 <ModalReiniciar modalToMesa={this.modalToMesa}
@@ -122,29 +130,22 @@ export class Mesa extends Component {
     }
 
     async datosJugador() {
+        var jugador = this.state.jugador;
         const response = await fetch('carta/GetDatosJugador', {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
             mode: 'cors',
-            body: this.state.jugador.idJugador
+            body: 2
         });
         const data = await response.json();
-        this.setState({ nombreJugador : data[0], puntosJugador : data[1]});
-    }
-
-    async rondaActual() {
-        const response = await fetch('carta/GetRonda', {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            mode: 'cors',
-            body: ''
-        });
-        const data = await response.json();
-        this.setState({ ronda : data });
+        jugador.nombreJugador = data[0];
+        jugador.estadoJugador = data[1];
+        jugador.puntosJugador = data[2];
+        this.setState({
+            jugador : jugador
+        })
     }
 
     async validar() {
@@ -168,10 +169,10 @@ export class Mesa extends Component {
           },
           method: 'POST',
           mode: 'cors',
-          body: this.state.jugador.idJugador
+          body: 2
       });
-    const data = await response.json();
-    this.setState({ validado : data });
-  }
+      const data = await response.json();
+      this.setState({ cartas: data, loading: false },
+          console.log("Estado final :" + this.state.jugador.idJugador));
+    }
 }
-

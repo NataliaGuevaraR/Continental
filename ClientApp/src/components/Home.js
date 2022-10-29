@@ -10,21 +10,21 @@ export class Home extends Component {
         super(props); 
         this.state = {
             isModalOpen: false,
-            playerId: 0
+            playerId: props.playerId
         }
-        this.playerId = 0;
     }
-        modalToHome = (answer, playerNumber) => {
+    modalToHome = (answer, playerNumber) => {
         this.setState({
             isModalOpen: answer,
-            playerId : playerNumber
-        })
-            console.log(playerNumber);
+            playerId: playerNumber
+        }, () => {
             this.reiniciar();
             this.repartir();
-
-        this.props.navigate("/mesa");
-    }
+            this.props.navigate("/mesa", {
+                    idJugador: this.state.playerId
+            });
+    })
+}
     
     render() {
         return (
@@ -33,7 +33,9 @@ export class Home extends Component {
                     <p>Aquí va la imagen principal del juego</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary"><Link to={{ pathname: "/reglas", playerId: this.playerId }}><h1 class="text-white">Ver reglas</h1></Link></button>
+                    <button class="btn btn-primary">
+                        <Link to="/reglas"><h1 class="text-white">Ver reglas</h1></Link>
+                    </button>
                 </div>
                 <div>
                     <button class="btn btn-primary" onClick={this.toggleUserModal}><h1 class="text-white">Comenzar juego nuevo</h1></button>
@@ -43,7 +45,7 @@ export class Home extends Component {
                         : null}
                 </div>
                 <Routes>
-                    <Route path="/mesa" element={<Mesa />} />
+                    <Route path="/mesa" element={<Mesa idJugador={this.playerId }/>} />
                     <Route path="/reglas" element={<Reglas />} />
                 </Routes>
             </div>
@@ -65,7 +67,7 @@ export class Home extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify(2)
+            body: ''
         })
     }
 

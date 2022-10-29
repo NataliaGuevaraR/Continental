@@ -9,7 +9,7 @@ export class ModalNombre extends Component {
             modal: true,
             jugador: {
                 name: props.name,
-                id: 0
+                id: props.id
             }
         };
         this.toggle = this.toggle.bind(this);
@@ -47,11 +47,8 @@ export class ModalNombre extends Component {
     }
 
     handleButton() {
-        this.limpiarNombre();
+        //this.limpiarNombre();
         this.GuardarNombre((this.state.jugador.nombre).toString());
-        this.props.modalToHome(false, this.state.jugador.id);
-//Aquí está el fucking error
-        console.log("Prueba: " + this.state.jugador.id);
     }
 
     GuardarNombre(value) {
@@ -68,8 +65,8 @@ export class ModalNombre extends Component {
             jugador.id = modifiedId;
             this.setState({
                 jugador: jugador
-            });
-        });;
+            }, this.props.modalToHome(false, this.state.jugador.id));
+        }); 
     }
 
     limpiarNombre() {

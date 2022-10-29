@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody } from 'reactstrap';
+import { Modal, ModalBody } from 'reactstrap';
 
 export class ModalReiniciar extends Component {
     static displayName = ModalReiniciar.name;
@@ -35,7 +35,7 @@ export class ModalReiniciar extends Component {
 
     handleButton() {
         this.reiniciar();
-        this.limpiarNombre();
+        //this.limpiarNombre();
         this.toggle();
         this.props.modalToHome(false);
     }
