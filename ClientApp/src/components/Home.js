@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, useNavigate, Routes, Route } from 'react-router-dom';
 import { ModalNombre } from './ModalNombre';
-import { Mesa } from './Mesa';
+import { GetMesa } from './Mesa';
 import { Reglas } from './Reglas';
 
 export class Home extends Component {
@@ -21,7 +21,9 @@ export class Home extends Component {
             this.reiniciar();
             this.repartir();
             this.props.navigate("/mesa", {
+                state: {
                     idJugador: this.state.playerId
+                }
             });
     })
 }
@@ -45,7 +47,7 @@ export class Home extends Component {
                         : null}
                 </div>
                 <Routes>
-                    <Route path="/mesa" element={<Mesa idJugador={this.playerId }/>} />
+                    <Route path="/mesa" element={<GetMesa idJugador={this.state.playerId }/>} />
                     <Route path="/reglas" element={<Reglas />} />
                 </Routes>
             </div>

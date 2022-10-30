@@ -8,7 +8,7 @@ export class Mesa extends Component {
 
   constructor(props) {
       super(props);
-      this.idJugador = props.idJugador;
+      this.playerId = this.props.location.state.idJugador;
       this.state = {
           cartas: [],
           loading: true,
@@ -68,25 +68,25 @@ export class Mesa extends Component {
 
     renderJugador() {
     return(
-        <div>
-            <h1>ID:</h1> {this.state.jugador.idJugador}
+        <div class="container d-flex">
+            <h1>ID:</h1> {this.props.location.state.idJugador}
             <h2>Nombre: </h2> {this.state.jugador.nombreJugador}
             <h2>Puntos: </h2> {this.state.jugador.puntosJugador}
-            <h2>Estado: </h2> {this.state.jugador.estadoJugador }
+            <h2>Estado: </h2> {this.state.jugador.estadoJugador}
+            <h2>Respuesta: {this.state.validado }</h2>
             </div>
         )
     }
 
 
-    render() {    
+    render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
             : Mesa.renderCartas(this.state.cartas);
 
-    return (
-        <div>
-            <h1>Id de prueba: {this.idJugador }</h1>
-            {this.renderJugador()}
+        return (
+            <div>
+                {this.renderJugador()}
             <button className="btn btn-primary" onClick={this.toggleUserModal}>Juego nuevo</button>
             {this.state.isModalOpen ?
                 <ModalReiniciar modalToMesa={this.modalToMesa}
@@ -137,7 +137,7 @@ export class Mesa extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: 2
+            body: this.props.location.state.idJugador
         });
         const data = await response.json();
         jugador.nombreJugador = data[0];
@@ -155,10 +155,10 @@ export class Mesa extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: this.state.jugador.idJugador
+            body: this.props.location.state.idJugador
         });
         const data = await response.json();
-        this.setState({ ronda: data });
+        this.setState({ validado: data });
     }
 
 
@@ -169,10 +169,15 @@ export class Mesa extends Component {
           },
           method: 'POST',
           mode: 'cors',
-          body: 2
+          body: this.props.location.state.idJugador
       });
       const data = await response.json();
-      this.setState({ cartas: data, loading: false },
-          console.log("Estado final :" + this.state.jugador.idJugador));
+      this.setState({ cartas: data, loading: false }
+      );
     }
+}
+
+export function GetMesa(props) {
+    const  location  = useLocation();
+    return (<Mesa location={ location } />)
 }

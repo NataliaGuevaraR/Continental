@@ -234,8 +234,9 @@ namespace Project2.Controllers
 		// Validar segun turno
 		[HttpPost]
         [Route("Validar")]
-        public string Validar(int jugadorId)
+        public string Validar([FromBody] JsonElement content)
         {
+			int jugadorId = int.Parse(content.ToString());
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);

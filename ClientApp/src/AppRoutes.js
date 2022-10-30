@@ -1,5 +1,5 @@
 import { Counter } from "./components/Counter";
-import { Mesa } from "./components/Mesa";
+import { GetMesa } from "./components/Mesa";
 import { Reglas } from "./components/Reglas";
 import {Redireccionar } from "./components/Home";
 import { ModalNombre } from "./components/ModalNombre";
@@ -16,7 +16,7 @@ const AppRoutes = [
   },
   {
     path: '/mesa',
-    element: <Mesa />
+    element: <GetMesa />
    },
   {
     path: '/reglas',
