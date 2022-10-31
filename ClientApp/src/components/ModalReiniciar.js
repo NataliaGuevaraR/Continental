@@ -17,7 +17,7 @@ export class ModalReiniciar extends Component {
                 <ModalBody>
                     <div class="container-md text-center">
                         <div class="row">
-                            <h2 class="secondary"> ¿Seguro de querer iniciar otra partida? </h2>
+                            <h2 class="secondary"> ¿Seguro de querer terminar la partida? </h2>
                         </div>
                         <div class="row">
                             <div class="col">
@@ -34,10 +34,9 @@ export class ModalReiniciar extends Component {
     }
 
     handleButton() {
-        this.reiniciar();
-        //this.limpiarNombre();
+        this.limpiarNombre();
         this.toggle();
-        this.props.modalToHome(false);
+        this.props.modalToMesa(false, true);
     }
 
     reiniciar() {
@@ -49,7 +48,7 @@ export class ModalReiniciar extends Component {
     }
 
     limpiarNombre() {
-        fetch('carta/LimpiarNombre', {
+        fetch('jugador/LimpiarNombre', {
             method: 'POST',
             mode: 'cors',
             body: ''

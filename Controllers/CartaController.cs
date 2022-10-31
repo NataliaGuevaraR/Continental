@@ -95,16 +95,14 @@ namespace Project2.Controllers
 		// Obtener cartas
 		[HttpPost]
 		[Route("GetCartas")]
-		public List<Carta> Get([FromBody] JsonElement contents)
+		public List<Carta> Get()
 		{
-		String content = contents.ToString();
-
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		var cartas = con.Query<Carta>("SELECT * FROM carta where estado=" + content + ";").ToList();
+		var cartas = con.Query<Carta>("SELECT * FROM carta;").ToList();
 
 
 		cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/" + cartas.Id + ".png");

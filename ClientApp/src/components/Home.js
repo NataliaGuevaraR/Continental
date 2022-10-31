@@ -10,19 +10,20 @@ export class Home extends Component {
         super(props); 
         this.state = {
             isModalOpen: false,
-            playerId: props.playerId
+            playerId: props.playerId,
         }
     }
     modalToHome = (answer, playerNumber) => {
         this.setState({
             isModalOpen: answer,
-            playerId: playerNumber
+            playerId: playerNumber,
         }, () => {
             this.reiniciar();
-            this.repartir();
+            if (this.state.playerId == 2)
+                this.repartir();
             this.props.navigate("/mesa", {
                 state: {
-                    idJugador: this.state.playerId
+                    idJugador: this.state.playerId,
                 }
             });
     })
@@ -47,7 +48,7 @@ export class Home extends Component {
                         : null}
                 </div>
                 <Routes>
-                    <Route path="/mesa" element={<GetMesa idJugador={this.state.playerId }/>} />
+                    <Route path="/mesa" element={<GetMesa idJugador={this.state.playerId} />} />
                     <Route path="/reglas" element={<Reglas />} />
                 </Routes>
             </div>
