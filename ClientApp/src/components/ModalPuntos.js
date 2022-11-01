@@ -1,5 +1,5 @@
-﻿import React, { Component } from 'react';
-import { Button, Modal, ModalBody } from 'reactstrap';
+import React, { Component } from 'react';
+import { Modal, ModalBody } from 'reactstrap';
 
 export class ModalPuntos extends Component {
     static displayName = ModalPuntos.name;

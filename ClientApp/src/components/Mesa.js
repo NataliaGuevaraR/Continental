@@ -142,6 +142,7 @@ export class Mesa extends Component {
                     <ModalPuntos puntosToMesa={this.puntosToMesa}
                     />
                     : null}
+                {contents }
       </div>
 
     );
