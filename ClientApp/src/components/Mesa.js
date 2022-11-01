@@ -297,14 +297,22 @@ export class Mesa extends Component {
       );
     }
 
-    static cambiarEstadoCarta() {
+//Pendiente para botones de cartas
+    handleCartaButton() {
+        cambiarEstadoCarta();
+    }
+
+    static cambiarEstadoCarta(idJugador, idCarta) {
         fetch('carta/CambioEstadoCarta', {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
             mode: 'cors',
-            body: ''
+            body: {
+                idJugador: idJugador,
+                idCarta: idCarta
+            }
         })
     }
 }
