@@ -187,7 +187,30 @@ namespace Project2.Controllers
 		[Route("CambioEstadoCarta")]
 		public void CambiarEstado(int IdJugador, int IdCarta)
 		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		int EstadoCarta = con.Query<int>("SELECT ronda_actual FROM juego").First();
+		int IdCartaPozo = con.Query<int>("select id from carta where estado = 0").First();
+		int NCartasPozo = con.Query<int>("select count (*) from carta where estado = 0").First();
+
+		if(EstadoCarta == IdJugador )
+		{
+			if (NCartasPozo == 1)
+			{
+			con.Query("update carta set estado = estado - 1 where estado < 0;"); //aumentar el estado de las cartas de la baraja para dar espacio a la carta nueva
+			con.Query("update carta set estado = -1 where id = " + IdCartaPozo);
+			con.Query("update carta set estado = 0 where id = " + IdCarta);
+			}
+			if(NCartasPozo == 0)
+			con.Query("update carta set estado = 0 where id = " + IdCarta);
+		}
+		if(EstadoCarta <= 0)
+		{
+		con.Query("update carta set estado = "+ IdJugador +"where id = " + IdCarta);
+		}
 		}
 
 		// get datos jugador
