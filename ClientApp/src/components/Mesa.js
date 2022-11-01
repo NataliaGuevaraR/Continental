@@ -64,6 +64,7 @@ export class Mesa extends Component {
                     <tbody>
                         <Container>
                             <Row>
+                                <Col>
                                 {cartas.map(carta => {
                                     if (carta.estado == parseInt(idJugador)) {
                                         if (estadoJugador == 0) {
@@ -76,7 +77,7 @@ export class Mesa extends Component {
                                         else {
                                             return (
                                                 <Col>
-                                                    <Button>
+                                                    <Button id={ carta.id }>
                                                         <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
                                                     </Button>
                                                 </Col>
@@ -84,6 +85,10 @@ export class Mesa extends Component {
                                         }
                                 }
                                 })}
+                                </Col>
+                                <Col>
+                                    {Mesa.renderPozo (cartas, idJugador, estadoJugador)}
+                                </Col>
                             </Row>
                         </Container>
                     </tbody>
@@ -103,21 +108,79 @@ export class Mesa extends Component {
             <h2>Nombre: </h2> {this.state.jugador.nombreJugador}
             <h2>Puntos: </h2> {this.state.jugador.puntosJugador}
             <h2>Estado: </h2> {this.state.jugador.estadoJugador}
+            <h2>Ronda actual: </h2> {this.state.ronda}
             <h2>Respuesta: {this.state.validado}</h2>
             </div>
         )
     }
 
-    renderPozo() {
+    static renderPozo(cartas, idJugador, estadoJugador) {
+        function getCartaRandom() {
+            let disponibles = (cartas.filter(carta => carta.estado < 0));
+            let indice = Math.floor(Math.random() * disponibles.length);
+            console.log(indice);
+            let cartaRandom = [disponibles[indice]];
+            console.log(cartaRandom);
+            return cartaRandom;
+        }
         return (
-<p>This is just a test</p>
-);
+            <table className='table table-striped' aria-labelledby="tabelLabel">
+                <thead>
+                    <tr>
+                        <th>Pozo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Container>
+                        <Row>
+                            <Col>
+                                {cartas.map(carta => {
+                                    if (carta.estado == 0) {
+                                        if (estadoJugador == 0) {
+                                            return (
+                                                <Col>
+                                                    <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
+                                                </Col>
+                                            )
+                                        }
+                                        else {
+                                            return (
+                                                <Col>
+                                                    <Button id={ carta.id }>
+                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
+                                                    </Button>
+                                                </Col>
+                                            )
+                                        }
+                                    }
+                                })}
+                            </Col>
+                        </Row>
+                        <Row>
+                            {getCartaRandom().map(cartaRandom => {
+                                    if (estadoJugador == 0) {
+                                        return (
+                                            <Col>
+                                                <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="" />
+                                            </Col>
+                                        )
+                                    }
+                                    else {
+                                        return (
+                                            <Col>
+                                                <Button id={cartaRandom.id}>
+                                                    <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="" />
+                                                </Button>
+                                            </Col>
+                                        )
+                                    }
+                            })}
+                        </Row>
+                    </Container>
+                </tbody>
+            </table>
+        );
     }
-
-    renderCarta() {
-
-    }
-
 
     render() {
         let contents = this.state.loading
@@ -198,7 +261,8 @@ export class Mesa extends Component {
         jugador.estadoJugador = data[1];
         jugador.puntosJugador = data[2];
         this.setState({
-            jugador : jugador
+            jugador: jugador,
+            ronda: data[3]
         })
     }
 
@@ -231,6 +295,17 @@ export class Mesa extends Component {
       const data = await response.json();
       this.setState({ cartas: data, loading: false }
       );
+    }
+
+    static cambiarEstadoCarta() {
+        fetch('carta/CambioEstadoCarta', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            mode: 'cors',
+            body: ''
+        })
     }
 }
 
