@@ -64,7 +64,6 @@ export class Mesa extends Component {
                     <tbody>
                         <Container>
                             <Row>
-                                <Col>
                                 {cartas.map(carta => {
                                     if (carta.estado == parseInt(idJugador)) {
                                         if (estadoJugador == 0) {
@@ -77,19 +76,18 @@ export class Mesa extends Component {
                                         else {
                                             return (
                                                 <Col>
-                                                    <Button id={ carta.id }>
-                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
+                                                    <Button>
+                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" name={idJugador} id={carta.id} onClick={Mesa.handleCartaButton} />
                                                     </Button>
                                                 </Col>
                                             )
                                         }
                                 }
                                 })}
-                                </Col>
-                                <Col>
+                                </Row>
+                                <Row>
                                     {Mesa.renderPozo (cartas, idJugador, estadoJugador)}
-                                </Col>
-                            </Row>
+                                </Row>
                         </Container>
                     </tbody>
                 </table>
@@ -115,13 +113,11 @@ export class Mesa extends Component {
     }
 
     static renderPozo(cartas, idJugador, estadoJugador) {
-        function getCartaRandom() {
-            let disponibles = (cartas.filter(carta => carta.estado < 0));
-            let indice = Math.floor(Math.random() * disponibles.length);
-            console.log(indice);
-            let cartaRandom = [disponibles[indice]];
-            console.log(cartaRandom);
-            return cartaRandom;
+        function getFromDeck() {
+            let ordenadas = (cartas.sort(function (a, b) { return a.estado - b.estado}));
+            let cartaFondo = ordenadas[0];
+            let cartaFromDeck = [cartaFondo];
+            return cartaFromDeck;
         }
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
@@ -146,8 +142,8 @@ export class Mesa extends Component {
                                         else {
                                             return (
                                                 <Col>
-                                                    <Button id={ carta.id }>
-                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
+                                                    <Button>
+                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" name={idJugador} id={carta.id} onClick={Mesa.handleCartaButton} />
                                                     </Button>
                                                 </Col>
                                             )
@@ -155,9 +151,8 @@ export class Mesa extends Component {
                                     }
                                 })}
                             </Col>
-                        </Row>
-                        <Row>
-                            {getCartaRandom().map(cartaRandom => {
+                        <Col>
+                            {getFromDeck().map(cartaFromDeck => {
                                     if (estadoJugador == 0) {
                                         return (
                                             <Col>
@@ -168,13 +163,14 @@ export class Mesa extends Component {
                                     else {
                                         return (
                                             <Col>
-                                                <Button id={cartaRandom.id}>
-                                                    <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="" />
+                                                <Button>
+                                                    <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="" name={idJugador} id={cartaFromDeck.id} onClick={Mesa.handleCartaButton} />
                                                 </Button>
                                             </Col>
                                         )
                                     }
                             })}
+                            </Col>
                         </Row>
                     </Container>
                 </tbody>
@@ -198,7 +194,6 @@ export class Mesa extends Component {
                 <ModalReiniciar modalToMesa={this.modalToMesa}
                 />
                 : null}
-            <button className="btn btn-primary" onClick={this.repartir}>Repartir</button>
                 <button className="btn btn-primary" onClick={this.handleButton.bind(this)}>Validar</button>
                 <button className="btn btn-primary" onClick={this.handlePuntos.bind(this)}>Ver puntos totales</button>
                 {this.state.isPuntosOpen ?
@@ -226,17 +221,6 @@ export class Mesa extends Component {
     handlePuntos() {
         this.setState((state) => {
             return { isPuntosOpen: !state.isPuntosOpen }
-        })
-    }
-
-    repartir() {
-        fetch('carta/Repartir', {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            mode: 'cors',
-            body: ''
         })
     }
 
@@ -297,9 +281,10 @@ export class Mesa extends Component {
       );
     }
 
-//Pendiente para botones de cartas
-    handleCartaButton() {
-        cambiarEstadoCarta();
+    static handleCartaButton(event) {
+        let invokerId = event.target.id;
+        let playerId = event.target.name;
+        Mesa.cambiarEstadoCarta(playerId, invokerId);
     }
 
     static cambiarEstadoCarta(idJugador, idCarta) {
@@ -309,10 +294,10 @@ export class Mesa extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: {
+            body: JSON.stringify({
                 idJugador: idJugador,
                 idCarta: idCarta
-            }
+            })
         })
     }
 }

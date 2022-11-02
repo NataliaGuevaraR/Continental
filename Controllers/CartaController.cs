@@ -184,31 +184,37 @@ namespace Project2.Controllers
 		// Cambiar estado carta TO DO
 		[HttpPost]
 		[Route("CambioEstadoCarta")]
-		public void CambiarEstado(int IdJugador, int IdCarta)
+		public void CambiarEstado([FromBody] JsonElement content)
 		{
+
+		var contents = JsonSerializer.Deserialize<Receiver>(content);
+		
+		int IdJugador = int.Parse(contents!.idJugador);
+		int IdCarta = int.Parse(contents!.idCarta);
+
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		int EstadoCarta = con.Query<int>("SELECT ronda_actual FROM juego").First();
-		int IdCartaPozo = con.Query<int>("select id from carta where estado = 0").First();
+		int EstadoCarta = con.Query<int>("SELECT estado FROM carta where id = "+IdCarta.ToString()).First();
 		int NCartasPozo = con.Query<int>("select count (*) from carta where estado = 0").First();
 
 		if(EstadoCarta == IdJugador )
 		{
 			if (NCartasPozo == 1)
 			{
+			int IdCartaPozo = con.Query<int>("select id from carta where estado = 0").First();
 			con.Query("update carta set estado = estado - 1 where estado < 0;"); //aumentar el estado de las cartas de la baraja para dar espacio a la carta nueva
-			con.Query("update carta set estado = -1 where id = " + IdCartaPozo);
-			con.Query("update carta set estado = 0 where id = " + IdCarta);
+			con.Query("update carta set estado = -1 where id = " + IdCartaPozo.ToString());
+			con.Query("update carta set estado = 0 where id = " + IdCarta.ToString());
 			}
 			if(NCartasPozo == 0)
-			con.Query("update carta set estado = 0 where id = " + IdCarta);
+			con.Query("update carta set estado = 0 where id = " + IdCarta.ToString());
 		}
 		if(EstadoCarta <= 0)
 		{
-		con.Query("update carta set estado = "+ IdJugador +"where id = " + IdCarta);
+		con.Query("update carta set estado = "+ IdJugador.ToString() +"where id = " + IdCarta.ToString());
 		}
 		}
 
@@ -257,7 +263,8 @@ namespace Project2.Controllers
         [Route("Validar")]
         public string[] Validar([FromBody] JsonElement content)
         {
-		string[] answer = { "" };
+			string[] answer = { "" };
+			answer[0] = "Imposible";
 			int jugadorId = int.Parse(content.ToString());
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
@@ -421,8 +428,12 @@ namespace Project2.Controllers
                 default:
                     break;
             }
-		answer[0] = "Imposible";
 		return answer;
         }
     }
+	public class Receiver
+	{
+		public string idJugador { get; set; }
+		public string idCarta { get; set; }
 	}
+}
