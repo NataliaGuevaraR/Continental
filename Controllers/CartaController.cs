@@ -126,7 +126,7 @@ namespace Project2.Controllers
 		con.Query("update juego set ronda_actual = 1");
 		con.Query("update carta set estado = 0");
 		con.Query("update jugador set puntos = 0, estado = 0");
-		con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
+		con.Query("update ronda set puntos_jugador_1 = 1, puntos_jugador_2 = 0");
 
 		con.Close();
 		}
