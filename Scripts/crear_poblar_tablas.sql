@@ -8,7 +8,7 @@ create table jugador(
  );
 
  /*tabla juego*/
-create table carta(
+create table juego(
   ronda_actual int not null,
   primary key(ronda_actual)
  );
@@ -24,7 +24,7 @@ create table carta(
  );
 
  /*tabla ronda*/
-create table carta(
+create table ronda(
   numero_ronda int not null,
   puntos_jugador_1 int not null,
   puntos_jugador_2 int not null,
@@ -48,19 +48,19 @@ insert into ronda values(6, 0, 0);
 insert into ronda values(7, 0, 0);
 
 /*poblar jugador*/
-INSERT INTO carta VALUES(1,'Coraz髇',20,'A',0);
-INSERT INTO carta VALUES(2,'Coraz髇',2,'2',0);
-INSERT INTO carta VALUES(3,'Coraz髇',3,'3',0);
-INSERT INTO carta VALUES(4,'Coraz髇',4,'4',0);
-INSERT INTO carta VALUES(5,'Coraz髇',5,'5',0);
-INSERT INTO carta VALUES(6,'Coraz髇',6,'6',0);
-INSERT INTO carta VALUES(7,'Coraz髇',7,'7',0);
-INSERT INTO carta VALUES(8,'Coraz髇',8,'8',0);
-INSERT INTO carta VALUES(9,'Coraz髇',9,'9',0);
-INSERT INTO carta VALUES(10,'Coraz髇',10,'10',0);
-INSERT INTO carta VALUES(11,'Coraz髇',10,'J',0);
-INSERT INTO carta VALUES(12,'Coraz髇',10,'Q',0);
-INSERT INTO carta VALUES(13,'Coraz髇',10,'K',0);
+INSERT INTO carta VALUES(1,'Coraz贸n',20,'A',0);
+INSERT INTO carta VALUES(2,'Coraz贸n',2,'2',0);
+INSERT INTO carta VALUES(3,'Coraz贸n',3,'3',0);
+INSERT INTO carta VALUES(4,'Coraz贸n',4,'4',0);
+INSERT INTO carta VALUES(5,'Coraz贸n',5,'5',0);
+INSERT INTO carta VALUES(6,'Coraz贸n',6,'6',0);
+INSERT INTO carta VALUES(7,'Coraz贸n',7,'7',0);
+INSERT INTO carta VALUES(8,'Coraz贸n',8,'8',0);
+INSERT INTO carta VALUES(9,'Coraz贸n',9,'9',0);
+INSERT INTO carta VALUES(10,'Coraz贸n',10,'10',0);
+INSERT INTO carta VALUES(11,'Coraz贸n',10,'J',0);
+INSERT INTO carta VALUES(12,'Coraz贸n',10,'Q',0);
+INSERT INTO carta VALUES(13,'Coraz贸n',10,'K',0);
 INSERT INTO carta VALUES(14,'Diamante',20,'A',0);
 INSERT INTO carta VALUES(15,'Diamante',2,'2',0);
 INSERT INTO carta VALUES(16,'Diamante',3,'3',0);
@@ -100,6 +100,5 @@ INSERT INTO carta VALUES(49,'Trebol',10,'10',0);
 INSERT INTO carta VALUES(50,'Trebol',10,'J',0);
 INSERT INTO carta VALUES(51,'Trebol',10,'Q',0);
 INSERT INTO carta VALUES(52,'Trebol',10,'K',0);
-INSERT INTO carta VALUES(53,'Joker',50,'1',0);
-INSERT INTO carta VALUES(54,'Joker',50,'2',0);
+
 
