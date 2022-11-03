@@ -95,16 +95,14 @@ namespace Project2.Controllers
 		// Obtener cartas
 		[HttpPost]
 		[Route("GetCartas")]
-		public List<Carta> Get([FromBody] JsonElement contents)
+		public List<Carta> Get()
 		{
-		String content = contents.ToString();
-
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		var cartas = con.Query<Carta>("SELECT * FROM carta where estado=" + content + ";").ToList();
+		var cartas = con.Query<Carta>("SELECT * FROM carta;").ToList();
 
 
 		cartas.ForEach(cartas => cartas.Imagen = "./Imagenes/" + cartas.Id + ".png");
@@ -125,11 +123,10 @@ namespace Project2.Controllers
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		//con.Query("update jugador set nombre = ''");
-		con.Query("update juego set ronda_actual = 7");
+		con.Query("update juego set ronda_actual = 1");
 		con.Query("update carta set estado = 0");
 		con.Query("update jugador set puntos = 0, estado = 0");
-		con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
+		con.Query("update ronda set puntos_jugador_1 = 1, puntos_jugador_2 = 0");
 
 		con.Close();
 		}
@@ -155,7 +152,7 @@ namespace Project2.Controllers
 		// Guardar nombre
 		[HttpPost]
 		[Route("GuardarNombre")]
-		public void GuardarNombre([FromBody] JsonElement content)
+		public int GuardarNombre([FromBody] JsonElement content)
 		{
 		String name = content.ToString();
 
@@ -181,22 +178,53 @@ namespace Project2.Controllers
 		con.Query("update jugador set nombre = " + "'" + name + "'" + " where id = " + id);
 
 		con.Close();
+		return id;
 		}
 
 		// Cambiar estado carta TO DO
 		[HttpPost]
 		[Route("CambioEstadoCarta")]
-		public void CambiarEstado(int IdJugador, int IdCarta)
+		public void CambiarEstado([FromBody] JsonElement content)
 		{
 
+		var contents = JsonSerializer.Deserialize<Receiver>(content);
+		
+		int IdJugador = int.Parse(contents!.idJugador);
+		int IdCarta = int.Parse(contents!.idCarta);
+
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		int EstadoCarta = con.Query<int>("SELECT estado FROM carta where id = "+IdCarta.ToString()).First();
+		int NCartasPozo = con.Query<int>("select count (*) from carta where estado = 0").First();
+
+		if(EstadoCarta == IdJugador )
+		{
+			if (NCartasPozo == 1)
+			{
+			int IdCartaPozo = con.Query<int>("select id from carta where estado = 0").First();
+			con.Query("update carta set estado = estado - 1 where estado < 0;"); //aumentar el estado de las cartas de la baraja para dar espacio a la carta nueva
+			con.Query("update carta set estado = -1 where id = " + IdCartaPozo.ToString());
+			con.Query("update carta set estado = 0 where id = " + IdCarta.ToString());
+			}
+			if(NCartasPozo == 0)
+			con.Query("update carta set estado = 0 where id = " + IdCarta.ToString());
+		}
+		if(EstadoCarta <= 0)
+		{
+		con.Query("update carta set estado = "+ IdJugador.ToString() +"where id = " + IdCarta.ToString());
+		}
 		}
 
 		// get datos jugador
 		[HttpPost]
 		[Route("GetDatosJugador")]
-		public string[] GetDatosJugador(int IdJugador)
+		public string[] GetDatosJugador([FromBody] JsonElement content)
 		{
-		string[] DatosJugador = { "" };
+		int IdJugador = int.Parse(content.ToString());
+		string[] DatosJugador = { "", "", "", "" };
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
@@ -205,6 +233,7 @@ namespace Project2.Controllers
 		DatosJugador[0] = con.Query<string>("SELECT nombre FROM jugador where id = " + IdJugador).First();
 		DatosJugador[1] = con.Query<string>("SELECT estado FROM jugador where id = " + IdJugador).First();
 		DatosJugador[2] = con.Query<string>("SELECT puntos FROM jugador where id = " + IdJugador).First();
+		DatosJugador[3] = con.Query<string>("SELECT ronda_actual FROM juego;").First();
 
 		con.Close();
 		return DatosJugador;
@@ -232,8 +261,11 @@ namespace Project2.Controllers
 		// Validar segun turno
 		[HttpPost]
         [Route("Validar")]
-        public string Validar(int jugadorId)
+        public string[] Validar([FromBody] JsonElement content)
         {
+			string[] answer = { "" };
+			answer[0] = "Imposible";
+			int jugadorId = int.Parse(content.ToString());
             var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
             using var con = new SqlConnection(cs);
@@ -262,16 +294,25 @@ namespace Project2.Controllers
             {
                 #region TT (6 CARTAS)
                 case 1:
-                    if (cartas_agrupadas_x_letra.Count == 2)
-                        return Sumar_puntos(jugadorId, ronda, puntaje);
-                    else
-                        return "No tiene dos ternas";
+		if (cartas_agrupadas_x_letra.Count == 2)
+		{
+		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+		break;
+		}
+		else
+		{
+		answer[0] = "No tiene dos ternas";
+		break;
+		}
                 #endregion
                 #region TE (7 CARTAS)
                 case 2:
                     List<Carta> cartas_posible_escalera_TE = new();
-                    if (cartas_agrupadas_x_letra[1].Count > 1)
-                        return "No tiene una terna y una escalera";
+                    if (cartas_agrupadas_x_letra[1].Count > 1){
+		answer[0] = "No tiene una terna y una escalera";
+		break;
+		}
+                        
                     if (cartas_agrupadas_x_letra[0].Count == 3)
                         cartas_posible_escalera_TE = cartas.Where(x => x.Letra != cartas_agrupadas_x_letra[0][0].Letra).ToList();
                     if (cartas_agrupadas_x_letra[0].Count == 4)
@@ -279,41 +320,61 @@ namespace Project2.Controllers
                         var carta_letra_repetida_casta_dominante = cartas_agrupadas_x_letra[0].Where(x => x.Casta == casta_dominante);
                         cartas_posible_escalera_TE = cartas.Where(x => x.Letra != cartas_agrupadas_x_letra[0][0].Letra).Concat(carta_letra_repetida_casta_dominante).ToList();
                     }
-                    if (ValidarEscalera(cartas_posible_escalera_TE))
-                        return Sumar_puntos(jugadorId, ronda, puntaje);
-                    return "No tiene una terna y una escalera";
+                    if (ValidarEscalera(cartas_posible_escalera_TE)){
+		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+		break;
+		}
+		answer[0] = "No tiene una terna y una escalera";
+		break;
                 #endregion
                 #region EE (8 CARTAS)
                 case 3:
-                    if (ValidarDosEscaleras(cartas_agrupadas_x_casta, numero_castas))
-                        return Sumar_puntos(jugadorId, ronda, puntaje);
-                    else
-                        return "No tiene dos escaleras";
+                    if (ValidarDosEscaleras(cartas_agrupadas_x_casta, numero_castas)){
+		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+		break;
+		}
+                    else{
+		answer[0] = "No tiene dos escaleras";
+		break;
+		}
+                        
                 #endregion
                 #region TTT (9 CARTAS)
                 case 4:
-                    if (cartas_agrupadas_x_letra.Count == 3)
-                        return Sumar_puntos(jugadorId, ronda, puntaje);
-                    else
-                        return "No tiene tres ternas";
+                    if (cartas_agrupadas_x_letra.Count == 3){
+		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+		break;
+		}
+                    else{
+		answer[0] = "No tiene tres ternas";
+		break;
+		}          
                 #endregion 
                 #region TTE (10 CARTAS)
                 case 5:
-                    if (cartas_agrupadas_x_casta[0].Count < 4 || cartas_agrupadas_x_letra[2].Count >=3 || cartas_agrupadas_x_letra[1].Count < 3 || cartas_agrupadas_x_casta[1].Count >= 4)
-                        return "No tiene dos ternas y una escalera";
+                    if (cartas_agrupadas_x_casta[0].Count < 4 || cartas_agrupadas_x_letra[2].Count >=3 || cartas_agrupadas_x_letra[1].Count < 3 || cartas_agrupadas_x_casta[1].Count >= 4){
+		answer[0] = "No tiene dos ternas y una escalera";
+		break;
+		}   
                     List<Carta> cartas_posible_escalera_TTE = cartas_agrupadas_x_casta[0];
                     if (cartas_agrupadas_x_letra[0].Count == 3)
                         cartas_posible_escalera_TTE = cartas_posible_escalera_TTE.Except(cartas_agrupadas_x_letra[0]).ToList();
                     if (cartas_agrupadas_x_letra[1].Count == 3)
                         cartas_posible_escalera_TTE = cartas_posible_escalera_TTE.Except(cartas_agrupadas_x_letra[1]).ToList();
-                    if(ValidarEscalera(cartas_posible_escalera_TTE))
-                        return Sumar_puntos(jugadorId, ronda, puntaje);
-                    return "No tiene dos ternas y una escalera";
+                    if(ValidarEscalera(cartas_posible_escalera_TTE)){
+		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+		break;
+		}
+		answer[0] = "No tiene dos ternas y una escalera";
+		break;
                 #endregion
                 #region TEE (11 CARTAS)
                 case 6:
-                    if (cartas_agrupadas_x_casta[0].Count < 4 || cartas_agrupadas_x_letra[1].Count >= 3 || cartas_agrupadas_x_letra[0].Count < 3)
-                        return "No tiene una terna y dos escaleras";
+                    if (cartas_agrupadas_x_casta[0].Count < 4 || cartas_agrupadas_x_letra[1].Count >= 3 || cartas_agrupadas_x_letra[0].Count < 3){
+		answer[0] = "No tiene una terna y dos escaleras";
+		break;
+		}
+                        
                     List<Carta> cartas_posible_escalera_TEE = new();
 
                     if (cartas_agrupadas_x_casta[0].Count>=8)
@@ -329,9 +390,12 @@ namespace Project2.Controllers
                         cartas_posible_escalera_TEE = cartas_posible_escalera_TEE.Except(carta_terna_dominante).ToList();
                     }
                     var aux_cartas_posible_escalera_TEE = cartas_posible_escalera_TEE.GroupBy(x => x.Casta).OrderByDescending(y => y.Count()).Select(grp => grp.ToList()).ToList();
-                    if (ValidarDosEscaleras(aux_cartas_posible_escalera_TEE, numero_castas))
-                        return Sumar_puntos(jugadorId, ronda, puntaje);
-                    return "No tiene una terna y dos escaleras";
+                    if (ValidarDosEscaleras(aux_cartas_posible_escalera_TEE, numero_castas)){
+		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+		break;
+		}
+		answer[0] = "No tiene una terna y dos escaleras";
+		break;
                 #endregion
                 #region EEE (12 CARTAS)
                 case 7:
@@ -357,13 +421,19 @@ namespace Project2.Controllers
                         if (cartas_precindibles.Contains(carta_restante))
                             Sumar_puntos(jugadorId, ronda, puntaje);
                     }
-                    return "No tiene tres escaleras";
+		answer[0] = "No tiene tres escaleras";
+		break;
                 #endregion
 
                 default:
                     break;
             }
-            return "Imposible";
+		return answer;
         }
     }
+	public class Receiver
+	{
+		public string idJugador { get; set; }
+		public string idCarta { get; set; }
 	}
+}

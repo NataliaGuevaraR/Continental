@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, useNavigate, Routes, Route } from 'react-router-dom';
 import { ModalNombre } from './ModalNombre';
-import { Mesa } from './Mesa';
+import { GetMesa } from './Mesa';
 import { Reglas } from './Reglas';
 
 export class Home extends Component {
@@ -10,17 +10,24 @@ export class Home extends Component {
         super(props); 
         this.state = {
             isModalOpen: false,
+            playerId: props.playerId,
         }
     }
-        modalToHome = (answer) => {
+    modalToHome = (answer, playerNumber) => {
         this.setState({
-            isModalOpen: answer
-        })
+            isModalOpen: answer,
+            playerId: playerNumber,
+        }, () => {
             this.reiniciar();
-            this.repartir();
-
-        this.props.navigate("/mesa");
-    }
+            if (this.state.playerId == 2)
+                this.repartir();
+            this.props.navigate("/mesa", {
+                state: {
+                    idJugador: this.state.playerId,
+                }
+            });
+    })
+}
     
     render() {
         return (
@@ -29,7 +36,9 @@ export class Home extends Component {
                     <p>Aquí va la imagen principal del juego</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary"><Link to="/reglas"><h1 class="text-white">Ver reglas</h1></Link></button>
+                    <button class="btn btn-primary">
+                        <Link to="/reglas"><h1 class="text-white">Ver reglas</h1></Link>
+                    </button>
                 </div>
                 <div>
                     <button class="btn btn-primary" onClick={this.toggleUserModal}><h1 class="text-white">Comenzar juego nuevo</h1></button>
@@ -39,7 +48,7 @@ export class Home extends Component {
                         : null}
                 </div>
                 <Routes>
-                    <Route path="/mesa" element={<Mesa />} />
+                    <Route path="/mesa" element={<GetMesa idJugador={this.state.playerId} />} />
                     <Route path="/reglas" element={<Reglas />} />
                 </Routes>
             </div>
@@ -61,7 +70,7 @@ export class Home extends Component {
             },
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify(2)
+            body: ''
         })
     }
 
