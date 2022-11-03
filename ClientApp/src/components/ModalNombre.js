@@ -9,6 +9,7 @@ export class ModalNombre extends Component {
             modal: true,
             jugador: {
                 name: props.name,
+                id: props.id
             }
         };
         this.toggle = this.toggle.bind(this);
@@ -46,11 +47,13 @@ export class ModalNombre extends Component {
     }
 
     handleButton() {
+        //this.limpiarNombre();
         this.GuardarNombre((this.state.jugador.nombre).toString());
-        this.props.modalToHome(false);
     }
 
     GuardarNombre(value) {
+        var jugador = this.state.jugador;
+        var modifiedId = 0;
         fetch('carta/GuardarNombre', {
             headers: {
                 'Content-Type': 'application/json'
@@ -58,8 +61,22 @@ export class ModalNombre extends Component {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify(value)
+        }).then(response => response.json()).then(data => { modifiedId = data; }).then(() => {
+            jugador.id = modifiedId;
+            this.setState({
+                jugador: jugador
+            }, this.props.modalToHome(false, this.state.jugador.id));
+        }); 
+    }
+
+    limpiarNombre() {
+        fetch('carta/LimpiarNombre', {
+            method: 'POST',
+            mode: 'cors',
+            body: ''
         })
     }
+
     toggle() {
         this.setState({
             modal: !this.state.modal

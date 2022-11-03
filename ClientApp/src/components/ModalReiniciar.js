@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody } from 'reactstrap';
+import { Modal, ModalBody } from 'reactstrap';
 
 export class ModalReiniciar extends Component {
     static displayName = ModalReiniciar.name;
@@ -17,7 +17,7 @@ export class ModalReiniciar extends Component {
                 <ModalBody>
                     <div class="container-md text-center">
                         <div class="row">
-                            <h2 class="secondary"> ¿Seguro de querer iniciar otra partida? </h2>
+                            <h2 class="secondary"> ¿Seguro de querer terminar la partida? </h2>
                         </div>
                         <div class="row">
                             <div class="col">
@@ -34,13 +34,21 @@ export class ModalReiniciar extends Component {
     }
 
     handleButton() {
-        this.reiniciar();
+        this.limpiarNombre();
         this.toggle();
-        this.props.modalToHome(false);
+        this.props.modalToMesa(false, true);
     }
 
     reiniciar() {
         fetch('carta/Reiniciar', {
+            method: 'POST',
+            mode: 'cors',
+            body: ''
+        })
+    }
+
+    limpiarNombre() {
+        fetch('jugador/LimpiarNombre', {
             method: 'POST',
             mode: 'cors',
             body: ''
