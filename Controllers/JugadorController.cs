@@ -36,5 +36,21 @@ namespace Project2.Controllers
             return jugadores;
 
         }
-    }
+
+		// Limpiar nombre al empezar cada juego
+		[HttpPost]
+		[Route("LimpiarNombre")]
+		public void Limpiar()
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		con.Query("update jugador set nombre = ''");
+
+		con.Close();
+
+		}
+	}
 }

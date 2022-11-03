@@ -1,11 +1,15 @@
 import { Counter } from "./components/Counter";
-import { Mesa } from "./components/Mesa";
-import { Home } from "./components/Home";
+import { GetMesa } from "./components/Mesa";
+import { Reglas } from "./components/Reglas";
+import { Redireccionar } from "./components/Home";
+import { ModalNombre } from "./components/ModalNombre";
+import { ModalReiniciar } from "./components/ModalReiniciar";
+import { ModalPuntos } from "./components/ModalPuntos";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <Redireccionar />
   },
   {
     path: '/counter',
@@ -13,8 +17,24 @@ const AppRoutes = [
   },
   {
     path: '/mesa',
-    element: <Mesa />
-  }
+    element: <GetMesa />
+   },
+  {
+    path: '/reglas',
+    element: <Reglas />
+    },
+    {
+    path: '/modalnombre',
+    element:<ModalNombre />
+    },
+    {
+    path: '/modalreiniciar',
+    element: <ModalReiniciar />
+    },
+    {
+    path: '/modalpuntos',
+    element: <ModalPuntos />
+    }
 ];
 
 export default AppRoutes;

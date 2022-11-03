@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+import { Modal, ModalBody } from 'reactstrap';
 
-export class Counter extends Component {
-    static displayName = Counter.name;
-
+export class ModalPuntos extends Component {
+    static displayName = ModalPuntos.name;
     constructor(props) {
         super(props);
-        this.state = { jugadores: [], loading: true };
+        this.state = {
+            modal: true,
+            jugadores: [],
+            loading: true
+        };
     }
 
     componentDidMount() {
@@ -16,7 +20,6 @@ export class Counter extends Component {
     componentWillUnmount() {
         clearInterval(this.interval);
     }
-
 
     static renderJugadores(jugadores) {
         return (
@@ -42,15 +45,21 @@ export class Counter extends Component {
     }
 
     render() {
-        let contents = this.state.loading
+       let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : Counter.renderJugadores(this.state.jugadores);
-
+            : ModalPuntos.renderJugadores(this.state.jugadores);
         return (
-            <div>
-                <h1 id="tabelLabel" >Jugador</h1>
-                {contents}
-            </div>
+            <Modal isOpen={this.state.modal}>
+                <ModalBody>
+                    <div>
+                        <h1 id="tabelLabel" >Jugador</h1>
+                        {contents}
+                    </div>
+                </ModalBody>
+                <div class="modal-footer">
+                    <button type="submit" className="btn btn-primary" onClick={this.handleButton.bind(this)}>Volver</button>
+                </div>
+            </Modal>
         );
     }
 
@@ -58,5 +67,12 @@ export class Counter extends Component {
         const response = await fetch('jugador');
         const data = await response.json();
         this.setState({ jugadores: data, loading: false });
+    }
+
+    handleButton() {
+        this.setState({
+            modal: false
+        },
+            this.props.puntosToMesa(false))
     }
 }

@@ -6,6 +6,13 @@ create table jugador(
   estado int not null,
   primary key(id)
  );
+
+ /*tabla juego*/
+create table carta(
+  ronda_actual int not null,
+  primary key(ronda_actual)
+ );
+
 /*tabla cartas*/
 create table carta(
   id int not null,
@@ -15,9 +22,31 @@ create table carta(
   estado int not null,
   primary key(id)
  );
+
+ /*tabla ronda*/
+create table carta(
+  numero_ronda int not null,
+  puntos_jugador_1 int not null,
+  puntos_jugador_2 int not null,
+  primary key(numero_ronda)
+ );
+
 /*poblar jugador*/
 insert into jugador values(1, '', 0, 0);
 insert into jugador values(2, '', 0, 0);
+
+/*poblar juego*/
+insert into juego values(0);
+
+/*poblar ronda*/
+insert into ronda values(1, 0, 0);
+insert into ronda values(2, 0, 0);
+insert into ronda values(3, 0, 0);
+insert into ronda values(4, 0, 0);
+insert into ronda values(5, 0, 0);
+insert into ronda values(6, 0, 0);
+insert into ronda values(7, 0, 0);
+
 /*poblar jugador*/
 INSERT INTO carta VALUES(1,'Corazón',20,'A',0);
 INSERT INTO carta VALUES(2,'Corazón',2,'2',0);
