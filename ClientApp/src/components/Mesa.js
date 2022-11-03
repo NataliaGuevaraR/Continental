@@ -18,6 +18,7 @@ export class Mesa extends Component {
           isModalOpen: false,
           ronda: props.ronda,
           validado: props.validado,
+          cartaTomada: false,
           jugador: {
               playerId : props.playerId,
               nombreJugador: props.nombreJugador,
@@ -52,7 +53,7 @@ export class Mesa extends Component {
     }
 
 
-    static renderCartas(cartas, idJugador, estadoJugador) {
+    renderCartas(cartas, idJugador, estadoJugador, cartaTomada) {
         if ((cartas.filter(carta => carta.estado == 2)).length > 0) {
             return (
                 <table className='table table-striped' aria-labelledby="tabelLabel">
@@ -66,18 +67,18 @@ export class Mesa extends Component {
                             <Row>
                                 {cartas.map(carta => {
                                     if (carta.estado == parseInt(idJugador)) {
-                                        if (estadoJugador == 0) {
+                                        if (estadoJugador == 0 || cartaTomada == false) {
                                             return (
                                                 <Col>
                                                     <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
                                                 </Col>
                                             )
                                         }
-                                        else {
+                                        else if (estadoJugador == 1 && cartaTomada == true) {
                                             return (
                                                 <Col>
                                                     <Button>
-                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" name={idJugador} id={carta.id} onClick={Mesa.handleCartaButton} />
+                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" name={idJugador} id={carta.id} onClick={this.handleCartaButton.bind(this)} />
                                                     </Button>
                                                 </Col>
                                             )
@@ -86,7 +87,7 @@ export class Mesa extends Component {
                                 })}
                                 </Row>
                                 <Row>
-                                    {Mesa.renderPozo (cartas, idJugador, estadoJugador)}
+                                    {this.renderPozo (cartas, idJugador, estadoJugador, cartaTomada)}
                                 </Row>
                         </Container>
                     </tbody>
@@ -112,7 +113,7 @@ export class Mesa extends Component {
         )
     }
 
-    static renderPozo(cartas, idJugador, estadoJugador) {
+    renderPozo(cartas, idJugador, estadoJugador, cartaTomada) {
         function getFromDeck() {
             let ordenadas = (cartas.sort(function (a, b) { return a.estado - b.estado}));
             let cartaFondo = ordenadas[0];
@@ -132,18 +133,18 @@ export class Mesa extends Component {
                             <Col>
                                 {cartas.map(carta => {
                                     if (carta.estado == 0) {
-                                        if (estadoJugador == 0) {
+                                        if (estadoJugador == 0 || cartaTomada == true) {
                                             return (
                                                 <Col>
                                                     <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" />
                                                 </Col>
                                             )
                                         }
-                                        else {
+                                        else if (estadoJugador == 1 && cartaTomada == false) {
                                             return (
                                                 <Col>
                                                     <Button>
-                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="" name={idJugador} id={carta.id} onClick={Mesa.handleCartaButton} />
+                                                        <img src={require(`${carta.imagen}`)} class="tarjeta" alt="tomar" name={idJugador} id={carta.id} onClick={this.handleCartaButton.bind(this)} />
                                                     </Button>
                                                 </Col>
                                             )
@@ -153,18 +154,18 @@ export class Mesa extends Component {
                             </Col>
                         <Col>
                             {getFromDeck().map(cartaFromDeck => {
-                                    if (estadoJugador == 0) {
+                                if (estadoJugador == 0 || cartaTomada == true) {
                                         return (
                                             <Col>
                                                 <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="" />
                                             </Col>
                                         )
                                     }
-                                    else {
+                                else if (estadoJugador == 1 && cartaTomada == false) {
                                         return (
                                             <Col>
                                                 <Button>
-                                                    <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="" name={idJugador} id={cartaFromDeck.id} onClick={Mesa.handleCartaButton} />
+                                                    <img src={require(`${"./Imagenes/back.jpg"}`)} class="tarjeta" alt="tomar" name={idJugador} id={cartaFromDeck.id} onClick={this.handleCartaButton.bind(this)} />
                                                 </Button>
                                             </Col>
                                         )
@@ -181,7 +182,7 @@ export class Mesa extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : Mesa.renderCartas(this.state.cartas, this.props.idJugador, this.state.jugador.estadoJugador);
+            : this.renderCartas(this.state.cartas, this.props.idJugador, this.state.jugador.estadoJugador, this.state.cartaTomada);
         <Routes>
             <Route path="/" element={<Redireccionar />} />
         </Routes>
@@ -281,13 +282,21 @@ export class Mesa extends Component {
       );
     }
 
-    static handleCartaButton(event) {
+    handleCartaButton(event) {
         let invokerId = event.target.id;
         let playerId = event.target.name;
-        Mesa.cambiarEstadoCarta(playerId, invokerId);
+        let origin = event.target.alt;
+        if (origin == "tomar") {
+            this.setState({ cartaTomada: true })
+        }
+        else {
+            this.setState({ cartaTomada: false })
+        }
+        console.log("Prueba: " + playerId + " " + invokerId);
+        this.cambiarEstadoCarta(playerId, invokerId);
     }
 
-    static cambiarEstadoCarta(idJugador, idCarta) {
+    cambiarEstadoCarta(idJugador, idCarta) {
         fetch('carta/CambioEstadoCarta', {
             headers: {
                 'Content-Type': 'application/json'
@@ -306,5 +315,5 @@ export function GetMesa(props) {
     const location = useLocation();
     const idJugador = location.state.idJugador;
     const navigate = useNavigate();
-    return (<Mesa idJugador={idJugador} navigate={navigate } />)
+    return (<Mesa idJugador={idJugador} navigate={navigate} />)
 }
