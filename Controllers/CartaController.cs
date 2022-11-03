@@ -128,7 +128,8 @@ namespace Project2.Controllers
 		con.Query("update juego set ronda_actual = 1");
 		con.Query("update carta set estado = 0");
 		con.Query("update jugador set puntos = 0, estado = 0");
-		con.Query("update ronda set puntos_jugador_1 = 1, puntos_jugador_2 = 0");
+		con.Query("update jugador set estado = 1 where id = 1");
+		con.Query("update ronda set puntos_jugador_1 = 0, puntos_jugador_2 = 0");
 
 		con.Close();
 		}
@@ -156,7 +157,7 @@ namespace Project2.Controllers
 		[Route("GuardarNombre")]
 		public int GuardarNombre([FromBody] JsonElement content)
 		{
-		String name = content.ToString();
+		string name = content.ToString();
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
@@ -168,13 +169,13 @@ namespace Project2.Controllers
 
 		int id = 1;
 
-		if (nombre_id1 != "                    " && nombre_id2 == "                    ")
-		{
-		id = 2;
-		con.Query("update jugador set nombre = " + "'" + name + "'" + " where id = " + id);
-		}
+		if (nombre_id1 != "                    " )
+		
+			id = 2;
 
+		con.Query("update jugador set nombre = '" +  name +  "' where id = "+ id);
 		return id;
+		
 		}
 
 		// Cambiar estado carta TO DO
@@ -184,20 +185,25 @@ namespace Project2.Controllers
 		{
 
 		var contents = JsonSerializer.Deserialize<Receiver>(content);
-		
+
 		int IdJugador = int.Parse(contents!.idJugador);
 		int IdCarta = int.Parse(contents!.idCarta);
+		int IdJugador2 = 2;
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		int EstadoCarta = con.Query<int>("SELECT estado FROM carta where id = "+IdCarta.ToString()).First();
+		int EstadoCarta = con.Query<int>("SELECT estado FROM carta where id = " + IdCarta.ToString()).First();
 		int NCartasPozo = con.Query<int>("select count (*) from carta where estado = 0").First();
 
-		if(EstadoCarta == IdJugador )
+		if (IdJugador == 2)
+			IdJugador2 = 1;
+
+		if (EstadoCarta == IdJugador )
 		{
+			
 			if (NCartasPozo == 1)
 			{
 			int IdCartaPozo = con.Query<int>("select id from carta where estado = 0").First();
@@ -206,7 +212,13 @@ namespace Project2.Controllers
 			con.Query("update carta set estado = 0 where id = " + IdCarta.ToString());
 			}
 			if(NCartasPozo == 0)
+			
 			con.Query("update carta set estado = 0 where id = " + IdCarta.ToString());
+
+
+		con.Query("update jugador set estado = 0");
+		con.Query("update jugador set estado = 1 where id = " + IdJugador2);
+
 		}
 		if(EstadoCarta <= 0)
 		{
@@ -240,7 +252,7 @@ namespace Project2.Controllers
 		[Route("GetPuntosRonda")]
 		public List<Ronda> GetPuntosRonda([FromBody] JsonElement contents)
 		{
-		String content = contents.ToString();
+		string content = contents.ToString();
 
 		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
 
