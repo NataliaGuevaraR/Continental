@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Project2.Clases;
 using System.Data.SqlClient;
 using System.Text.Json;
@@ -123,6 +124,7 @@ namespace Project2.Controllers
 		using var con = new SqlConnection(cs);
 		con.Open();
 
+		//con.Query("update jugador set nombre = ''");
 		con.Query("update juego set ronda_actual = 1");
 		con.Query("update carta set estado = 0");
 		con.Query("update jugador set puntos = 0, estado = 0");
@@ -161,23 +163,17 @@ namespace Project2.Controllers
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		SqlCommand nombre_1_receive = new SqlCommand("select nombre from jugador where id = 1", con);
-		SqlDataReader dataReader = nombre_1_receive.ExecuteReader();
-		String nombre_1 = "";
-
-		while (dataReader.Read()) {
-		nombre_1 = nombre_1 + dataReader.GetValue(0);
-		}
-		dataReader.Close();
+		string nombre_id1 = con.Query<string>("select nombre from jugador where id = 1").First();
+		string nombre_id2 = con.Query<string>("select nombre from jugador where id = 2").First();
 
 		int id = 1;
 
-		if (nombre_1 != "                    ")
-			id = 2;
-
+		if (nombre_id1 != "                    " && nombre_id2 == "                    ")
+		{
+		id = 2;
 		con.Query("update jugador set nombre = " + "'" + name + "'" + " where id = " + id);
+		}
 
-		con.Close();
 		return id;
 		}
 
@@ -294,16 +290,16 @@ namespace Project2.Controllers
             {
                 #region TT (6 CARTAS)
                 case 1:
-		if (cartas_agrupadas_x_letra.Count == 2)
-		{
-		answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
-		break;
-		}
-		else
-		{
-		answer[0] = "No tiene dos ternas";
-		break;
-		}
+				if (cartas_agrupadas_x_letra.Count == 2)
+				{
+				answer[0] = Sumar_puntos(jugadorId, ronda, puntaje);
+				break;
+				}
+				else
+				{
+				answer[0] = "No tiene dos ternas";
+				break;
+				}
                 #endregion
                 #region TE (7 CARTAS)
                 case 2:
