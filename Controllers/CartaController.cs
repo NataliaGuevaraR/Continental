@@ -178,7 +178,7 @@ namespace Project2.Controllers
 		
 		}
 
-		// Cambiar estado carta TO DO
+		// Cambiar estado carta 
 		[HttpPost]
 		[Route("CambioEstadoCarta")]
 		public void CambiarEstado([FromBody] JsonElement content)
