@@ -105,11 +105,9 @@ export class Mesa extends Component {
     renderJugador() {
     return(
         <div class="container d-flex">
-            <h1>ID:</h1> {this.props.idJugador}
-            <h2>Nombre: </h2> {this.state.jugador.nombreJugador}
-            <h2>Puntos: </h2> {this.state.jugador.puntosJugador}
-            <h2>Estado: </h2> {this.state.jugador.estadoJugador}
-            <h2>Ronda actual: </h2> {this.state.ronda}
+            <h2>Nombre: {this.state.jugador.nombreJugador}</h2> 
+            <h2>Puntos: {this.state.jugador.puntosJugador}</h2> 
+            <h2>Ronda actual: {this.state.ronda}</h2> 
             <h2>Respuesta: {this.state.validado}</h2>
             </div>
         )
