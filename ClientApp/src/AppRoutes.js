@@ -5,6 +5,8 @@ import { Redireccionar } from "./components/Home";
 import { ModalNombre } from "./components/ModalNombre";
 import { ModalReiniciar } from "./components/ModalReiniciar";
 import { ModalPuntos } from "./components/ModalPuntos";
+import { ModalManos } from "./components/ModalManos";
+
 
 const AppRoutes = [
   {
@@ -34,6 +36,10 @@ const AppRoutes = [
     {
     path: '/modalpuntos',
     element: <ModalPuntos />
+    },
+    {
+    path: '/modalmanos',
+    element: <ModalManos />
     }
 ];
 

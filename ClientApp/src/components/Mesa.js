@@ -4,30 +4,32 @@ import { ModalReiniciar } from './ModalReiniciar';
 import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
 import { Redireccionar } from './Home';
 import { ModalPuntos } from './ModalPuntos';
+import { ModalManos } from './ModalManos';
 
 export class Mesa extends Component {
     static reset = false;
     static displayName = Mesa.name;
 
-  constructor(props) {
-      super(props);
-      this.idJugador = this.props.idJugador;
-      this.state = {
-          isPuntosOpen : false,
-          cartas: [],
-          loading: true,
-          isModalOpen: false,
-          ronda: props.ronda,
-          validado: props.validado,
-          cartaTomada: false,
-          jugador: {
-              playerId : props.playerId,
-              nombreJugador: props.nombreJugador,
-              puntosJugador: props.puntosJugador,
-              estadoJugador : props.estadoJugador
-          }
-      };
-      
+    constructor(props) {
+        super(props);
+        this.idJugador = this.props.idJugador;
+        this.state = {
+            isManosOpen: false,
+            isPuntosOpen: false,
+            cartas: [],
+            loading: true,
+            isModalOpen: false,
+            ronda: props.ronda,
+            validado: props.validado,
+            cartaTomada: false,
+            jugador: {
+                playerId: props.playerId,
+                nombreJugador: props.nombreJugador,
+                puntosJugador: props.puntosJugador,
+                estadoJugador: props.estadoJugador
+            }
+        };
+
     }
     modalToMesa = (answer, follow) => {
         this.setState({
@@ -38,6 +40,12 @@ export class Mesa extends Component {
             this.props.navigate("/");
         }
     }
+
+    manosToMesa = (answer => {
+        this.setState({
+            isManosOpen: answer
+        })
+    })
 
     puntosToMesa = (answer) => {
         this.setState({
@@ -105,10 +113,10 @@ export class Mesa extends Component {
     renderJugador() {
     return(
         <div class="container d-flex">
-            <h2>Nombre: {this.state.jugador.nombreJugador}</h2> 
-            <h2>Puntos: {this.state.jugador.puntosJugador}</h2> 
-            <h2>Ronda actual: {this.state.ronda}</h2> 
-            <h2>Respuesta: {this.state.validado}</h2>
+            <h2>Nombre: {this.state.jugador.nombreJugador} &emsp;  </h2> 
+            <h2>Puntos: {this.state.jugador.puntosJugador} &emsp; </h2> 
+            <h2>Ronda actual: {this.state.ronda} &emsp; </h2> 
+            <h2>Respuesta: {this.state.validado} &emsp; </h2>
             </div>
         )
     }
@@ -194,9 +202,15 @@ export class Mesa extends Component {
             {this.state.isModalOpen ?
                 <ModalReiniciar modalToMesa={this.modalToMesa}
                 />
-                : null}
+                    : null}
+                <button className="btn btn-primary" onClick={this.toggleManosModal}>Ver manos requeridas</button>
+                {this.state.isManosOpen ?
+                    <ModalManos manosToMesa={this.manosToMesa}
+                    />
+                    : null}
                 <button className="btn btn-primary" onClick={this.handleButton.bind(this)}>Validar</button>
                 <button className="btn btn-primary" onClick={this.handlePuntos.bind(this)}>Ver puntos totales</button>
+
                 {this.state.isPuntosOpen ?
                     <ModalPuntos puntosToMesa={this.puntosToMesa}
                     />
@@ -228,6 +242,12 @@ export class Mesa extends Component {
     toggleUserModal = () => {
         this.setState((state) => {
             return { isModalOpen: !state.isModalOpen }
+        })
+    }
+
+    toggleManosModal = () => {
+        this.setState((state) => {
+            return { isManosOpen: !state.isManosOpen }
         })
     }
 
