@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Project2.Clases;
 using System.Data.SqlClient;
+using System.Xml.Linq;
 
 namespace Project2.Controllers
 {
@@ -47,10 +49,11 @@ namespace Project2.Controllers
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		con.Query("update jugador set nombre = ''");
+		string nombre_id1 = con.Query<string>("select nombre from jugador where id = 1").First();
+		string nombre_id2 = con.Query<string>("select nombre from jugador where id = 2").First();
 
-		con.Close();
-
+		if (nombre_id1 != "                    " && nombre_id2 != "                    ")
+			con.Query("update jugador set nombre = ''");
 		}
 	}
 }
