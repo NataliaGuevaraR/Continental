@@ -4,9 +4,9 @@ AS
 	update carta set estado = 0;
 	DECLARE @cnt INT = 0;
 	DECLARE @rndm INT = 0;
-	WHILE @cnt < 54
+	WHILE @cnt < 52
 	BEGIN
-		set @rndm = (SELECT 1 + CRYPT_GEN_RANDOM(1) % (54 - @cnt +1));
+		set @rndm = (SELECT 1 + CRYPT_GEN_RANDOM(1) % (52 - @cnt +1));
 		update carta set estado = (@cnt * -1) where id = (SELECT TOP 1 id 
 			FROM 
 			( 
@@ -20,9 +20,9 @@ AS
 
 	END;
 
-	update carta set estado = 1 where estado >= -53 and estado <= (-53 + @Ronda -1);
-	update carta set estado = 2 where estado >= (-53 + @Ronda) and estado <= (-53 + 2 * @Ronda -1);
+	update carta set estado = 1 where estado >= -51 and estado <= (-51 + @Ronda -1);
+	update carta set estado = 2 where estado >= (-51 + @Ronda) and estado <= (-51 + 2 * @Ronda -1);
 GO  
 
-exec Repartir 12
+exec Repartir 6
 select * from carta order by estado
