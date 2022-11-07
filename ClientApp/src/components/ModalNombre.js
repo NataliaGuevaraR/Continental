@@ -47,7 +47,7 @@ export class ModalNombre extends Component {
     }
 
     handleButton() {
-        //this.limpiarNombre();
+        this.limpiarNombre();
         this.GuardarNombre((this.state.jugador.nombre).toString());
     }
 
