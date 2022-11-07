@@ -6,7 +6,8 @@ import { Redireccionar } from './Home';
 import { ModalPuntos } from './ModalPuntos';
 
 export class Mesa extends Component {
-  static displayName = Mesa.name;
+    static reset = false;
+    static displayName = Mesa.name;
 
   constructor(props) {
       super(props);
@@ -33,6 +34,7 @@ export class Mesa extends Component {
             isModalOpen: answer
         })
         if (follow) {
+            this.reiniciar();
             this.props.navigate("/");
         }
     }
@@ -44,8 +46,8 @@ export class Mesa extends Component {
     }
 
     componentDidMount() {
-        this.interval = setInterval(() => this.populateCartas(), 1000);
-        this.interval = setInterval(() => this.datosJugador(), 1000);
+        this.interval = setInterval(() => this.populateCartas(), 500);
+        this.interval = setInterval(() => this.datosJugador(), 500);
     }
 
     componentWillUnmount() {
@@ -292,7 +294,6 @@ export class Mesa extends Component {
         else {
             this.setState({ cartaTomada: false })
         }
-        console.log("Prueba: " + playerId + " " + invokerId);
         this.cambiarEstadoCarta(playerId, invokerId);
     }
 

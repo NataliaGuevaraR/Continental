@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Button, Modal, ModalBody } from 'reactstrap';
 
 export class Reglas extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modal: true,
+        };
+        this.toggle = this.toggle.bind(this);
+    }
     static displayName = Reglas.name;
 
     render() {
         return (
-<html>
+                <html>
                 <div class="container-md text-center justify-content-center text-primary text-white">
                     <h1 class="titulo position-relative">REGLAS DEL JUEGO</h1>
                 </div>
