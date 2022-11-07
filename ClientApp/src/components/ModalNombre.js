@@ -69,7 +69,6 @@ export class ModalNombre extends Component {
     }
 
     limpiarNombre() {
-        this.limpiarNombre();
         fetch('jugador/LimpiarNombre', {
             method: 'POST',
             mode: 'cors',
