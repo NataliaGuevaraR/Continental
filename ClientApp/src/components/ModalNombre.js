@@ -47,7 +47,6 @@ export class ModalNombre extends Component {
     }
 
     handleButton() {
-        this.limpiarNombre();
         this.GuardarNombre((this.state.jugador.nombre).toString());
     }
 
@@ -70,6 +69,7 @@ export class ModalNombre extends Component {
     }
 
     limpiarNombre() {
+        this.limpiarNombre();
         fetch('jugador/LimpiarNombre', {
             method: 'POST',
             mode: 'cors',
