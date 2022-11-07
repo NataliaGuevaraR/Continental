@@ -49,10 +49,6 @@ namespace Project2.Controllers
 		using var con = new SqlConnection(cs);
 		con.Open();
 
-		string nombre_id1 = con.Query<string>("select nombre from jugador where id = 1").First();
-		string nombre_id2 = con.Query<string>("select nombre from jugador where id = 2").First();
-
-		if (nombre_id1 != "                    " && nombre_id2 != "                    ")
 			con.Query("update jugador set nombre = ''");
 		}
 	}
