@@ -51,6 +51,7 @@ export class ModalNombre extends Component {
     }
 
     GuardarNombre(value) {
+        this.limpiarNombre();
         var jugador = this.state.jugador;
         var modifiedId = 0;
         fetch('carta/GuardarNombre', {
