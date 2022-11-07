@@ -19,8 +19,7 @@ export class Home extends Component {
             playerId: playerNumber,
         }, () => {
             this.reiniciar();
-            if (this.state.playerId == 2)
-                this.repartir();
+            this.repartir();
             this.props.navigate("/mesa", {
                 state: {
                     idJugador: this.state.playerId,
