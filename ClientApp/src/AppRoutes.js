@@ -6,6 +6,7 @@ import { ModalNombre } from "./components/ModalNombre";
 import { ModalReiniciar } from "./components/ModalReiniciar";
 import { ModalPuntos } from "./components/ModalPuntos";
 import { ModalManos } from "./components/ModalManos";
+import { ModalReglas } from "./components/ModalReglas";
 
 
 const AppRoutes = [
@@ -40,6 +41,10 @@ const AppRoutes = [
     {
     path: '/modalmanos',
     element: <ModalManos />
+    },
+    {
+    path: '/modalreglas',
+    element: <ModalReglas />
     }
 ];
 
