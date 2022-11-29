@@ -13,6 +13,7 @@ export class ModalReglas extends Component {
     }
 
     render() {
+        console.log(this.state.content);
         return (
             <Modal isOpen={this.state.modal}>
                 <ModalBody>

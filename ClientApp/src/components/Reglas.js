@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Container, Col, Row, Button } from 'reactstrap';
 import { ModalReglas } from './ModalReglas';
 
 export class Reglas extends Component {
@@ -22,83 +22,90 @@ export class Reglas extends Component {
 
     render() {
         return (
-                <html>
-                <div class="container-md text-center justify-content-center text-primary text-white">
-                    <h1 class="titulo position-relative">REGLAS DEL JUEGO</h1>
-                </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <Button onClick={this.toggleUserModal.bind(this)} value="Objetivos" variant="primary">
+            <html>
+                <Container className="text-center">
+                    <Row className="text-center">
+                    <p><img src={require('./Imagenes/reglas.png')} alt=""/></p>
+                    </Row>
+                <Row>
+                    <Col>
+                        <Button onClick={this.toggleUserModal.bind(this)} value="Objetivos" color="light" variant="primary">
                             Objetivos
                         </Button>
                         {this.state.isModalOpen ?
                             <ModalReglas modalToReglas={this.modalToReglas} content={this.state.request }
                             />
                             : null}
-                    </div>
-
-                    <Button onClick={this.toggleUserModal.bind(this)} value="Inicio" variant="primary">
+                    </Col>
+                    <Col>
+                    <Button onClick={this.toggleUserModal.bind(this)} value="Inicio" color="light" variant="primary">
                         Inicio
                     </Button>
                     {this.state.isModalOpen ?
                         <ModalReglas modalToReglas={this.modalToReglas} content={this.state.request}
                         />
-                        : null}
-                </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <Button onClick={this.toggleUserModal.bind(this)} value="Orden" variant="primary">
+                            : null}
+                    </Col>
+                    <br /> <br /> <br />
+                </Row>
+                <Row>
+                <Col>
+                        <Button onClick={this.toggleUserModal.bind(this)} value="Orden" color="light" variant="primary">
                             Orden y valores
                         </Button>
                         {this.state.isModalOpen ?
                             <ModalReglas modalToReglas={this.modalToReglas} content={this.state.request}
                             />
                             : null}
-                    </div>
-                    <div class="col text-center">
-                        <Button onClick={this.toggleUserModal.bind(this)} value="Combinaciones" variant="primary">
+                    </Col>
+                    <Col>
+                        <Button onClick={this.toggleUserModal.bind(this)} value="Combinaciones" color="light" variant="primary">
                             Combinaciones
                         </Button>
                         {this.state.isModalOpen ?
                             <ModalReglas modalToReglas={this.modalToReglas} content={this.state.request }
                             />
                             : null}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <Button onClick={this.toggleUserModal.bind(this)} value="Desarrollo" variant="primary">
+                    </Col>
+                    <br /> <br /> <br />
+                </Row>
+                <Row>
+                        <Col>
+                        <Button onClick={this.toggleUserModal.bind(this)} value="Desarrollo" color="light" variant="primary">
                             Desarrollo
-                        </Button>
+                                </Button>
                         {this.state.isModalOpen ?
                             <ModalReglas modalToReglas={this.modalToReglas} content={this.state.request}
                             />
                             : null}  
-                    </div>
-                </div>
-                <div class="row">
-                    <Button onClick={this.toggleUserModal.bind(this)} value="Final" variant="primary">
+                    </Col>
+                    <Col>
+                    <Button onClick={this.toggleUserModal.bind(this)} value="Final" color="light" variant="primary">
                         Final
                     </Button>
                     {this.state.isModalOpen ?
                         <ModalReglas modalToReglas={this.modalToReglas} content={this.state.request}
                         />
-                        : null}     
-                </div>
-                <div class="row">
-                    <p> </p>
-                </div>
-                <div class="row">
-                <br /><br />
-                <Button onClick={this.toggle} variant="primary">
-                    <Link to="/"><h1 class="text-white">Volver al inicio</h1></Link>
-                    </Button>
-                </div>
-</html>
+                            : null}    
+                    </Col>
+                    <br /> <br /> <br /> <br /> <br />
+                </Row>
+                <Row>
+                    <br /><br />
+                    <p>
+                    <Button onClick={this.toggle} color="light" size="sm">
+                        <Link to="/"><h2 class="text-black">Volver al inicio</h2></Link>
+                        </Button>
+                    </p>
+                    <br /> <br /> <br />
+                </Row>
+                </Container>
+            </html>
         );
     }
 
     toggleUserModal = (event) => {
+        console.log(event.target);
         this.setState({ request: event.target.value})
         this.setState((state) => {
             return { isModalOpen: !state.isModalOpen }

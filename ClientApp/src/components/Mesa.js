@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Col, Row, Button } from 'reactstrap';
 import { ModalReiniciar } from './ModalReiniciar';
-import { useLocation, useNavigate, Routes, Route } from "react-router-dom";
+import { useLocation, Link, useNavigate, Routes, Route } from "react-router-dom";
 import { Redireccionar } from './Home';
 import { ModalPuntos } from './ModalPuntos';
 import { ModalManos } from './ModalManos';
@@ -9,6 +9,7 @@ import { ModalManos } from './ModalManos';
 export class Mesa extends Component {
     static reset = false;
     static displayName = Mesa.name;
+
 
     constructor(props) {
         super(props);
@@ -67,11 +68,6 @@ export class Mesa extends Component {
         if ((cartas.filter(carta => carta.estado == 2)).length > 0) {
             return (
                 <table className='table table-striped' aria-labelledby="tabelLabel">
-                    <thead>
-                        <tr>
-                            <th>Carta</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         <Container>
                             <Row>
@@ -106,18 +102,29 @@ export class Mesa extends Component {
         }
         else {
             return (
-                <h2><em>Esperando a jugador 2...</em></h2>)
+                <h2 class="text-white"><em>Esperando a jugador 2...</em></h2>)
         }
     }
 
     renderJugador() {
     return(
-        <div class="container d-flex">
-            <h2>Nombre: {this.state.jugador.nombreJugador} &emsp;  </h2> 
-            <h2>Puntos: {this.state.jugador.puntosJugador} &emsp; </h2> 
-            <h2>Ronda actual: {this.state.ronda} &emsp; </h2> 
-            <h2>Respuesta: {this.state.validado} &emsp; </h2>
-            </div>
+        <Container className="text-center">
+            <Row>
+                <Col>
+                    <h2 class="text-white">Nombre: {this.state.jugador.nombreJugador} &emsp;  </h2>
+                </Col>
+                <Col>
+                    <h2 class="text-white">Puntos: {this.state.jugador.puntosJugador} &emsp; </h2>
+                </Col>
+                <Col>
+                    <h2 class="text-white">Ronda actual: {this.state.ronda} &emsp; </h2>
+                </Col>
+                <Col>
+                    <h2 class="text-white">Respuesta: {this.state.validado} &emsp; </h2>
+                </Col>
+            </Row>
+            <p><br /><br /></p>
+            </Container>
         )
     }
 
@@ -130,13 +137,8 @@ export class Mesa extends Component {
         }
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>Pozo</th>
-                    </tr>
-                </thead>
                 <tbody>
-                    <Container>
+                    <Container className="text-center">
                         <Row>
                             <Col>
                                 {cartas.map(carta => {
@@ -197,25 +199,44 @@ export class Mesa extends Component {
 
         return (
             <div>
+                <div class="container-md text-center">
+                    <div>
+                        <p><img src={require('./Imagenes/header.png')} alt="" /></p>
+                    </div>
+                </div>
                 {this.renderJugador()}
-            <button className="btn btn-primary" onClick={this.toggleUserModal}>Terminar juego</button>
+                <Container className="text-center">
+                    <Row>
+                        <Col>
+                            <button class="btn btn-light" onClick={this.handleButton.bind(this)}>Validar</button>
+                        </Col>
+                        <Col>
+                            <button class="btn btn-light" onClick={this.handlePuntos.bind(this)}>Ver puntos totales</button>
+                        </Col>
+                        <Col>
+                            <button class="btn btn-light" onClick={this.toggleManosModal}>Ver manos necesarias</button>
+                        </Col>
+                        <Col>
+                            <button class="btn btn-light" onClick={this.toggleUserModal}>Terminar juego</button>
+                        </Col>
+                    </Row>
+                    <p><br /><br /></p>
+                </Container>
             {this.state.isModalOpen ?
                 <ModalReiniciar modalToMesa={this.modalToMesa}
                 />
                     : null}
-                <button className="btn btn-primary" onClick={this.toggleManosModal}>Ver manos requeridas</button>
                 {this.state.isManosOpen ?
                     <ModalManos manosToMesa={this.manosToMesa}
                     />
                     : null}
-                <button className="btn btn-primary" onClick={this.handleButton.bind(this)}>Validar</button>
-                <button className="btn btn-primary" onClick={this.handlePuntos.bind(this)}>Ver puntos totales</button>
 
                 {this.state.isPuntosOpen ?
                     <ModalPuntos puntosToMesa={this.puntosToMesa}
                     />
                     : null}
-                {contents }
+                {contents}
+
       </div>
 
     );

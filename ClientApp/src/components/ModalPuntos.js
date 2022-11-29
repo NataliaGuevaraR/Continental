@@ -57,7 +57,7 @@ export class ModalPuntos extends Component {
                     </div>
                 </ModalBody>
                 <div class="modal-footer">
-                    <button type="submit" className="btn btn-primary" onClick={this.handleButton.bind(this)}>Volver</button>
+                    <button type="submit" className="btn-dark" onClick={this.handleButton.bind(this)}>Volver</button>
                 </div>
             </Modal>
         );

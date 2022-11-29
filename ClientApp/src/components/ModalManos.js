@@ -36,7 +36,7 @@ export class ModalManos extends Component {
                     </div>
                 </ModalBody>
                 <div class="modal-footer">
-                    <Button onClick={this.toggle} variant="primary">Volver</Button>
+                    <Button onClick={this.toggle} className="btn-dark">Volver</Button>
                 </div>
             </Modal>
         );

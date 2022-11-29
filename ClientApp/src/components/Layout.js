@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Container } from 'reactstrap';
-import { NavMenu } from './NavMenu';
+import background from './Imagenes/background.jpg';
 
 export class Layout extends Component {
   static displayName = Layout.name;
 
   render() {
     return (
-      <div>
-        <NavMenu />
+        <div style={{
+            backgroundImage: `url(${background})`,
+            backgroundRepeat: 'repeat',
+            height: '100vh'
+        }}>
         <Container>
           {this.props.children}
         </Container>

@@ -18,13 +18,14 @@ export class ModalReiniciar extends Component {
                     <div class="container-md text-center">
                         <div class="row">
                             <h2 class="secondary"> ¿Seguro de querer terminar la partida? </h2>
+                            <p><br /><br /></p>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button className="btn btn-primary" onClick={this.handleButton.bind(this)}>Sí, seguro</button>
+                                <button class="btn btn-dark" onClick={this.handleButton.bind(this)}>Sí, seguro</button>
                             </div>
                             <div class="col">
-                                <button className="btn btn-primary" onClick={this.toggle}>No, volver</button>
+                                <button class="btn btn-dark" onClick={this.toggle}>No, volver</button>
                             </div>
                         </div>
                     </div>

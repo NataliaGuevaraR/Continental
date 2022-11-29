@@ -22,12 +22,15 @@ export class ModalNombre extends Component {
                     <div class="container-md text-center">
                         <div class="row">
                             <h1>Nombre para el juego</h1>
+                            <p><br /></p>
                         </div>
                         <div class="row">
-                            <input class="form-control" id="nickname" type="text" placeholder="Nickname" aria-label="nickname" value={this.state.jugador.name} onChange={this.handleName.bind(this)} />
+                            <input class="form-control" id="nickname" type="text" placeholder="Nombre" aria-label="nickname" value={this.state.jugador.name} onChange={this.handleName.bind(this)} />
+                            <p><br /></p>
                         </div>
                         <div class="row">
-                            <button type="submit" className="btn btn-primary" onClick={this.handleButton.bind(this)}>Jugar</button>
+                            <button type="submit" className="btn btn-dark" onClick={this.handleButton.bind(this)}>Jugar</button>
+                            <p><br /></p>
                         </div>
                     </div>
                 </ModalBody>
@@ -51,7 +54,6 @@ export class ModalNombre extends Component {
     }
 
     GuardarNombre(value) {
-        this.limpiarNombre();
         var jugador = this.state.jugador;
         var modifiedId = 0;
         fetch('carta/GuardarNombre', {
