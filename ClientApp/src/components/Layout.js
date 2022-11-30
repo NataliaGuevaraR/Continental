@@ -10,7 +10,7 @@ export class Layout extends Component {
         <div style={{
             backgroundImage: `url(${background})`,
             backgroundRepeat: 'repeat',
-            height: '100vh'
+            backgroundSize: 'cover'
         }}>
         <Container>
           {this.props.children}

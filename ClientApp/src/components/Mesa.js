@@ -5,6 +5,7 @@ import { useLocation, Link, useNavigate, Routes, Route } from "react-router-dom"
 import { Redireccionar } from './Home';
 import { ModalPuntos } from './ModalPuntos';
 import { ModalManos } from './ModalManos';
+import { ModalAnswer } from './ModalAnswer';
 
 export class Mesa extends Component {
     static reset = false;
@@ -20,6 +21,7 @@ export class Mesa extends Component {
             cartas: [],
             loading: true,
             isModalOpen: false,
+            isAnswerOpen: false,
             ronda: props.ronda,
             validado: props.validado,
             cartaTomada: false,
@@ -28,7 +30,8 @@ export class Mesa extends Component {
                 nombreJugador: props.nombreJugador,
                 puntosJugador: props.puntosJugador,
                 estadoJugador: props.estadoJugador
-            }
+            },
+            playersList: []
         };
 
     }
@@ -54,9 +57,16 @@ export class Mesa extends Component {
         })
     }
 
+    answerToMesa = (answer) => {
+        this.setState({
+            isAnswerOpen: answer,
+        })
+    }
+
     componentDidMount() {
         this.interval = setInterval(() => this.populateCartas(), 500);
         this.interval = setInterval(() => this.datosJugador(), 500);
+        this.interval = setInterval(() => this.populatePlayers(), 500);
     }
 
     componentWillUnmount() {
@@ -102,7 +112,11 @@ export class Mesa extends Component {
         }
         else {
             return (
-                <h2 class="text-white"><em>Esperando a jugador 2...</em></h2>)
+                <Container className="text-center text-white">
+                    <h2 class="text-white"><em>Esperando a jugador 2...</em></h2>
+                        <p><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
+                </Container>
+            )
         }
     }
 
@@ -119,11 +133,8 @@ export class Mesa extends Component {
                 <Col>
                     <h2 class="text-white">Ronda actual: {this.state.ronda} &emsp; </h2>
                 </Col>
-                <Col>
-                    <h2 class="text-white">Respuesta: {this.state.validado} &emsp; </h2>
-                </Col>
             </Row>
-            <p><br /><br /></p>
+            <p><br /></p>
             </Container>
         )
     }
@@ -189,10 +200,73 @@ export class Mesa extends Component {
         );
     }
 
+    renderButtons() {
+        return (
+            <Container className="text-center">
+                <Row>
+                    <Col>
+                        <button class="btn btn-light" onClick={this.handleButton.bind(this)}>Validar</button>
+                    </Col>
+                    <Col>
+                        <button class="btn btn-light" onClick={this.handlePuntos.bind(this)}>Ver puntos totales</button>
+                    </Col>
+                    <Col>
+                        <button class="btn btn-light" onClick={this.toggleManosModal}>Ver manos necesarias</button>
+                    </Col>
+                    <Col>
+                        <button class="btn btn-light" onClick={this.toggleUserModal}>Terminar juego</button>
+                    </Col>
+                </Row>
+                <p><br /><br /></p>
+            </Container>
+        )
+    }
+
+    renderFinish() {
+        return (
+            <Container className="text-center text-white">
+                <p><br /> <br /> <br /></p>
+                <h2 class="text-white"><em>Juego finalizado...</em></h2>
+                <p><br/> <br /></p>
+                <button><Link to="/"><h2 class="text-black">Volver al menú principal</h2></Link></button>
+                <p><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
+            </Container>
+        )
+    }
+
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : this.renderCartas(this.state.cartas, this.props.idJugador, this.state.jugador.estadoJugador, this.state.cartaTomada);
+        function determineValid(playersList) {
+            let count = 0;
+            for (let element of playersList) {
+                if (element.nombre == "") {
+                    count = count + 1;
+                }
+            }
+            if (count > 1) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        let contentsPlayer = null;
+        let contentsButtons = null;
+        let contentsMesa = null;
+        
+
+        if (determineValid(this.state.playersList) == true) {
+            contentsPlayer = this.renderJugador();
+            contentsButtons = this.renderButtons();
+            contentsMesa = this.state.loading
+                ? <p><em>Loading...</em></p>
+                : this.renderCartas(this.state.cartas, this.props.idJugador, this.state.jugador.estadoJugador, this.state.cartaTomada);
+        }
+        else {
+            contentsMesa = this.renderFinish();
+        }
+        
+        
         <Routes>
             <Route path="/" element={<Redireccionar />} />
         </Routes>
@@ -204,24 +278,6 @@ export class Mesa extends Component {
                         <p><img src={require('./Imagenes/header.png')} alt="" /></p>
                     </div>
                 </div>
-                {this.renderJugador()}
-                <Container className="text-center">
-                    <Row>
-                        <Col>
-                            <button class="btn btn-light" onClick={this.handleButton.bind(this)}>Validar</button>
-                        </Col>
-                        <Col>
-                            <button class="btn btn-light" onClick={this.handlePuntos.bind(this)}>Ver puntos totales</button>
-                        </Col>
-                        <Col>
-                            <button class="btn btn-light" onClick={this.toggleManosModal}>Ver manos necesarias</button>
-                        </Col>
-                        <Col>
-                            <button class="btn btn-light" onClick={this.toggleUserModal}>Terminar juego</button>
-                        </Col>
-                    </Row>
-                    <p><br /><br /></p>
-                </Container>
             {this.state.isModalOpen ?
                 <ModalReiniciar modalToMesa={this.modalToMesa}
                 />
@@ -235,8 +291,15 @@ export class Mesa extends Component {
                     <ModalPuntos puntosToMesa={this.puntosToMesa}
                     />
                     : null}
-                {contents}
 
+                {this.state.isAnswerOpen ?
+                    <ModalAnswer answerToMesa={this.answerToMesa} response={this.state.validado}
+                    />
+                    : null}
+                
+                {contentsPlayer}
+                {contentsButtons}
+                {contentsMesa}
       </div>
 
     );
@@ -263,6 +326,12 @@ export class Mesa extends Component {
     toggleUserModal = () => {
         this.setState((state) => {
             return { isModalOpen: !state.isModalOpen }
+        })
+    }
+
+    toggleAnswerModal = () => {
+        this.setState((state) => {
+            return { isAnswerOpen: !state.isAnswerOpen }
         })
     }
 
@@ -303,7 +372,8 @@ export class Mesa extends Component {
             body: value
         }).then(response => response.json()).then(data => { modifiedValidado = data; }).then(() => {
             this.setState({
-                validado: modifiedValidado
+                validado: modifiedValidado,
+                isAnswerOpen: true
             });
         }); 
     }
@@ -321,6 +391,12 @@ export class Mesa extends Component {
       const data = await response.json();
       this.setState({ cartas: data, loading: false }
       );
+    }
+
+    async populatePlayers() {
+        const response = await fetch('jugador');
+        const data = await response.json();
+        this.setState({ playersList: data });
     }
 
     handleCartaButton(event) {

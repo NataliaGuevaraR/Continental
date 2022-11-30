@@ -23,7 +23,7 @@ export class ModalReglas extends Component {
                             <h2 class="objetivos">Objetivos</h2>
                             <p>Ligar las cartas en combinaciones establecidas y exponerlas, el puntaje de las cartas
                                 del ganador en la mesa se suman a su puntaje y gana el juego el que tiene más puntos
-                                al final de la partida. En este juego usaremos una baraja de poker inglesa con comodines
+                                al final de la partida. En este juego usaremos una baraja de poker inglesa sin comodines
                                 lo que da un total de 52 cartas.</p>
                         </div>
                             : null}
@@ -41,7 +41,7 @@ export class ModalReglas extends Component {
                                     <h2 class="orden">Orden y valor de las cartas</h2>
                                 </div>
                                 <div class="row">
-                                    <p>El orden de las cartas, es el usual, del as al rey de forma correlativa. El valor de las cartas es:</p>
+                                    <p>El orden de las cartas es el usual, del as al rey de forma correlativa. El valor de las cartas es:</p>
                                 </div>
                                 <div class="row">
                                     <table class="table table-striped-columns table-bordered">
@@ -72,7 +72,7 @@ export class ModalReglas extends Component {
                                 </div>
                                 <div class="row">
                                     <ul class="list-group">
-                                        <li class="list-group-item"><strong>(TT) Primera ronda: </strong> se reparten seis cartas y deben realizarse dos tríos.</li>
+                                        <li class="list-group-item"><strong>(TT) Primera ronda: </strong> seis cartas; dos tríos.</li>
                                         <li class="list-group-item"><strong>(TE) Segunda ronda: </strong> siete cartas; un trío y una escalera.</li>
                                         <li class="list-group-item"><strong>(EE) Tercera ronda: </strong> ocho cartas; dos escaleras.</li>
                                         <li class="list-group-item"><strong>(TTT) Cuarta ronda: </strong> nueve cartas; tres tríos.</li>

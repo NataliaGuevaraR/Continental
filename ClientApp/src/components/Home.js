@@ -48,7 +48,7 @@ export class Home extends Component {
                         </button>
                     </Col>
                     <Col>
-                        <button class="btn btn-light" onClick={this.toggleUserModal}><h1 class="text-black">Comenzar juego nuevo</h1></button>
+                        <button class="btn btn-light" onClick={this.toggleUserModal}><h1 class="text-black">Juego nuevo</h1></button>
                         {this.state.isModalOpen ?
                             <ModalNombre modalToHome={this.modalToHome}
                             />

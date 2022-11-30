@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody } from 'reactstrap';
+import { Modal, ModalBody, Button } from 'reactstrap';
 
 export class ModalPuntos extends Component {
     static displayName = ModalPuntos.name;
@@ -7,36 +7,37 @@ export class ModalPuntos extends Component {
         super(props);
         this.state = {
             modal: true,
-            jugadores: [],
-            loading: true
+            ronda: [],
+            loading: true,
+            jugador: []
         };
     }
 
     componentDidMount() {
-        this.interval = setInterval(() => this.populateJugadores(), 1000);
-
+        this.populateJugador();
+        this.interval = setInterval(() => this.populateRonda(), 1000);
     }
 
     componentWillUnmount() {
         clearInterval(this.interval);
     }
 
-    static renderJugadores(jugadores) {
+    static renderJugadores(ronda, jugador) {
         return (
-            <table className='table table-striped' aria-labelledby="tabelLabel">
+            <table className='table table-striped text-center' aria-labelledby="tabelLabel">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Puntos</th>
-                        <th>Estado</th>
+                        <th>Ronda</th>
+                        <th>{jugador[0].nombre}</th>
+                        <th>{jugador[1].nombre}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {jugadores.map(jugador =>
-                        <tr key={jugador.id}>
-                            <td>{jugador.nombre}</td>
-                            <td>{jugador.puntos}</td>
-                            <td>{jugador.estado}</td>
+                    {ronda.map(ronda =>
+                        <tr key={ronda.numero_ronda}>
+                            <td>{ronda.numero_ronda}</td>
+                            <td>{ronda.puntos_jugador_1}</td>
+                            <td>{ronda.puntos_jugador_2}</td>
                         </tr>
                     )}
                 </tbody>
@@ -47,26 +48,32 @@ export class ModalPuntos extends Component {
     render() {
        let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : ModalPuntos.renderJugadores(this.state.jugadores);
+            : ModalPuntos.renderJugadores(this.state.ronda, this.state.jugador);
         return (
             <Modal isOpen={this.state.modal}>
                 <ModalBody>
-                    <div>
-                        <h1 id="tabelLabel" >Jugador</h1>
+                    <div className="text-center">
+                        <h1 id="tableLabel" >Puntos totales</h1>
                         {contents}
                     </div>
                 </ModalBody>
                 <div class="modal-footer">
-                    <button type="submit" className="btn-dark" onClick={this.handleButton.bind(this)}>Volver</button>
+                    <Button className="btn-dark" onClick={this.handleButton.bind(this)}>Volver</Button>
                 </div>
             </Modal>
         );
     }
 
-    async populateJugadores() {
+    async populateRonda() {
+        const response = await fetch('jugador/GetRonda');
+        const data = await response.json();
+        this.setState({ ronda: data, loading: false });
+    }
+
+    async populateJugador() {
         const response = await fetch('jugador');
         const data = await response.json();
-        this.setState({ jugadores: data, loading: false });
+        this.setState({ jugador: data });
     }
 
     handleButton() {

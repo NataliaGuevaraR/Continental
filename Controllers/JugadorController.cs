@@ -39,6 +39,25 @@ namespace Project2.Controllers
 
         }
 
+		//Obtener las puntos de cada jugador por ronda
+		[HttpGet]
+		[Route("GetRonda")]
+		public List<Ronda> GetRonda()
+		{
+		var cs = _config.GetValue<string>("ConnectionStrings:Connection");
+
+		using var con = new SqlConnection(cs);
+		con.Open();
+
+		var ronda = con.Query<Ronda>("SELECT * FROM ronda").ToList();
+
+
+		con.Close();
+
+		return ronda;
+
+		}
+
 		// Limpiar nombre al empezar cada juego
 		[HttpPost]
 		[Route("LimpiarNombre")]
@@ -51,5 +70,12 @@ namespace Project2.Controllers
 
 			con.Query("update jugador set nombre = ''");
 		}
+	}
+
+	public class Ronda
+	{
+		public int numero_ronda { get; set; }
+		public int puntos_jugador_1{ get; set; }
+		public int puntos_jugador_2 { get; set; }
 	}
 }
