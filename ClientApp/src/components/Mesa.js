@@ -112,10 +112,12 @@ export class Mesa extends Component {
         }
         else {
             return (
-                <Container className="text-center text-white">
-                    <h2 class="text-white"><em>Esperando a jugador 2...</em></h2>
-                        <p><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
-                </Container>
+                <div class="no-game">
+                    <Container className="text-center text-white container-fluid">
+                        <h2 class="text-white"><em>Esperando a jugador 2...</em></h2>
+                            <p><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
+                        </Container>
+                </div>
             )
         }
     }
@@ -224,13 +226,15 @@ export class Mesa extends Component {
 
     renderFinish() {
         return (
-            <Container className="text-center text-white">
-                <p><br /> <br /> <br /></p>
-                <h2 class="text-white"><em>Juego finalizado...</em></h2>
-                <p><br/> <br /></p>
-                <button><Link to="/"><h2 class="text-black">Volver al menú principal</h2></Link></button>
-                <p><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
-            </Container>
+            <div class="no-game">
+                <Container className="text-center text-white">
+                    <p><br /> <br /> <br /></p>
+                    <h2 class="text-white"><em>Juego finalizado...</em></h2>
+                    <p><br/> <br /></p>
+                    <button><Link to="/"><h2 class="text-black">Volver al menú principal</h2></Link></button>
+                    <p><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></p>
+                    </Container>
+            </div>
         )
     }
 

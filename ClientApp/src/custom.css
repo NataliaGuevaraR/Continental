@@ -25,3 +25,7 @@ div {
     border-collapse: separate;
     border-spacing: 0 15px;
 }
+
+.no-game {
+    height: 100vh;
+}

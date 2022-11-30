@@ -33,7 +33,7 @@ export class Home extends Component {
     
     render() {
         return (
-            <div class="container-md text-center">
+            <div class="container-md text-center no-game">
                 <div>
                     <p><img src={require('./Imagenes/main.png')} alt=""/></p>
                 </div>
