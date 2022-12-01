@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody, Container, Row, ModalHeader} from 'reactstrap';
+import { Button, Modal, ModalBody, Container, Row, ModalHeader } from 'reactstrap';
 
-export class ModalAnswer extends Component {
-    static displayName = ModalAnswer.name;
+export class ModalNextRonda extends Component {
+    static displayName = ModalNextRonda.name;
     constructor(props) {
         super(props);
         this.state = {
             modal: true,
-            response: this.props.response
         };
         this.toggle = this.toggle.bind(this);
     }
@@ -17,16 +16,16 @@ export class ModalAnswer extends Component {
             <Modal isOpen={this.state.modal}>
                 <ModalHeader className="text-center">
                     <h1 className="text-dark">
-                        Respuesta
+                        Siguiente ronda
                     </h1>
                 </ModalHeader>
                 <ModalBody>
                     <Container className="text-center text-black">
                         <Row>
                             <p><br /> <br /> <br /></p>
-                            <h2>{this.state.response}</h2>
+                            <h2>¡Ronda perdida! <br /> <em>Más suerte para la próxima...</em></h2>
                             <p><br /> <br /><br /></p>
-                        </Row>  
+                        </Row>
                     </Container>
                 </ModalBody>
                 <div class="modal-footer text-center">
@@ -40,7 +39,7 @@ export class ModalAnswer extends Component {
         this.setState({
             modal: !this.state.modal
         });
-        this.props.answerToMesa(false);
+        this.props.nextRondaToMesa(false);
     }
 
 }

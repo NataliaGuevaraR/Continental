@@ -8,6 +8,7 @@ import { ModalPuntos } from "./components/ModalPuntos";
 import { ModalManos } from "./components/ModalManos";
 import { ModalReglas } from "./components/ModalReglas";
 import { ModalAnswer } from "./components/ModalAnswer";
+import { ModalNextRonda } from "./components/ModalNextRonda";
 
 const AppRoutes = [
   {
@@ -49,6 +50,10 @@ const AppRoutes = [
     {
     path: '/modalanswer',
     element: <ModalAnswer />
+    },
+    {
+    path: '/modalnextronda',
+    element: <ModalNextRonda />
     }
 ];
 

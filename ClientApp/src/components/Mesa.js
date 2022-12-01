@@ -6,6 +6,8 @@ import { Redireccionar } from './Home';
 import { ModalPuntos } from './ModalPuntos';
 import { ModalManos } from './ModalManos';
 import { ModalAnswer } from './ModalAnswer';
+import { ModalNextRonda } from './ModalNextRonda';
+
 
 export class Mesa extends Component {
     static reset = false;
@@ -22,6 +24,7 @@ export class Mesa extends Component {
             loading: true,
             isModalOpen: false,
             isAnswerOpen: false,
+            isNextRondaOpen: false,
             ronda: props.ronda,
             validado: props.validado,
             cartaTomada: false,
@@ -63,6 +66,12 @@ export class Mesa extends Component {
         })
     }
 
+    nextRondaToMesa = (answer) => {
+        this.setState({
+            isNextRondaOpen: answer,
+        })
+    }
+
     componentDidMount() {
         this.interval = setInterval(() => this.populateCartas(), 500);
         this.interval = setInterval(() => this.datosJugador(), 500);
@@ -77,6 +86,7 @@ export class Mesa extends Component {
     renderCartas(cartas, idJugador, estadoJugador, cartaTomada) {
         if ((cartas.filter(carta => carta.estado == 2)).length > 0) {
             return (
+                <div class="game">
                 <table className='table table-striped' aria-labelledby="tabelLabel">
                     <tbody>
                         <Container>
@@ -107,9 +117,11 @@ export class Mesa extends Component {
                                 </Row>
                         </Container>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             );
         }
+                
         else {
             return (
                 <div class="no-game">
@@ -300,6 +312,11 @@ export class Mesa extends Component {
                     <ModalAnswer answerToMesa={this.answerToMesa} response={this.state.validado}
                     />
                     : null}
+
+                {this.state.isNextRondaOpen ?
+                    <ModalNextRonda nextRondaToMesa={this.nextRondaToMesa}
+                    />
+                    : null}
                 
                 {contentsPlayer}
                 {contentsButtons}
@@ -345,8 +362,16 @@ export class Mesa extends Component {
         })
     }
 
+    toggleNextRondaModal = () => {
+        this.setState((state) => {
+            return { isNextRondaOpen: !state.isNextRondaOpen }
+        })
+    }
+
     async datosJugador() {
         var jugador = this.state.jugador;
+        var currentRonda = this.state.ronda;
+        var nextRonda = null;
         const response = await fetch('carta/GetDatosJugador', {
             headers: {
                 'Content-Type': 'application/json'
@@ -359,10 +384,16 @@ export class Mesa extends Component {
         jugador.nombreJugador = data[0];
         jugador.estadoJugador = data[1];
         jugador.puntosJugador = data[2];
+        nextRonda = data[3];
         this.setState({
             jugador: jugador,
-            ronda: data[3]
+            ronda: nextRonda
         })
+        console.log("Old: " + currentRonda);
+        console.log("New: " + nextRonda);
+        if ((currentRonda != nextRonda) && this.state.isAnswerOpen == false && currentRonda !== undefined) {
+            this.toggleNextRondaModal();
+        }
     }
 
     validar(value) {

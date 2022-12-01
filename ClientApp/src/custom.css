@@ -29,3 +29,7 @@ div {
 .no-game {
     height: 100vh;
 }
+
+.game {
+    height: 80vh;
+}
