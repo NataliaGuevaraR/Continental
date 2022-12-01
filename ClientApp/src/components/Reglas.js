@@ -22,7 +22,7 @@ export class Reglas extends Component {
 
     render() {
         return (
-            <html>
+            <html class="no-game">
                 <Container className="text-center">
                     <Row className="text-center">
                     <p><img src={require('./Imagenes/reglas.png')} alt=""/></p>

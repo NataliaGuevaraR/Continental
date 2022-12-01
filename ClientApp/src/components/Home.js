@@ -3,7 +3,7 @@ import { Link, useNavigate, Routes, Route } from 'react-router-dom';
 import { ModalNombre } from './ModalNombre';
 import { GetMesa } from './Mesa';
 import { Reglas } from './Reglas';
-import { Container, Col, Row, Button } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -38,7 +38,7 @@ export class Home extends Component {
                     <p><img src={require('./Imagenes/main.png')} alt=""/></p>
                 </div>
                 <Row>
-                    <p><br /><br /><br />
+                    <p><br />
                     </p>
                 </Row>
                 <Row>
